@@ -1,0 +1,4 @@
+# No external dependencies required - using only Python standard library
+# Python >= 3.6 is required for:
+# - f-strings
+# - typing module improvements 
