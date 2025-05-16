@@ -7,6 +7,7 @@ __all__ = ['calculate_string_similarity']
 def compare_strings(source_text: str, target_text: str) -> List[Tuple[str, str, str, int, int]]:
     """
     Compare two strings and return their differences using SequenceMatcher.
+    Case sensitive comparison.
     
     Args:
         source_text: The source string to compare from
@@ -27,6 +28,7 @@ def compare_strings(source_text: str, target_text: str) -> List[Tuple[str, str, 
 def calculate_string_similarity(text: str, subtext: str) -> Dict:
     """
     Calculate similarity metrics between a text and a subtext.
+    Case sensitive comparison.
     
     Args:
         text: The main text to compare against
@@ -43,11 +45,9 @@ def calculate_string_similarity(text: str, subtext: str) -> Dict:
             - inserted_char_count: Number of extra characters
             - replaced_char_count: Number of replaced characters
     """
-    lower_text = text.lower()
-    lower_subtext = subtext.lower()
     matching_segments = []
 
-    for operation, sub1, sub2, i, j in compare_strings(lower_text, lower_subtext):
+    for operation, sub1, sub2, i, j in compare_strings(text, subtext):
         if operation in ['equal', 'replace', 'insert']:
             matching_segments.append((operation, (i, i + len(sub1)), (j, j + len(sub2))))
 
@@ -111,11 +111,12 @@ def print_comparison_details(text: str, subtext: str, results: Dict):
     for key, value in results.items():
         print(f"{key:<20}: {value}")
 
+
 def run_examples():
     """Run various examples demonstrating different string matching scenarios."""
     
     print("=" * 80)
-    print("1. Exact Substring Match")
+    print("1. Case Sensitive Exact Match")
     print("=" * 80)
     text = "Hello World! This is a test string."
     subtext = "This is"
@@ -123,7 +124,7 @@ def run_examples():
     print_comparison_details(text, subtext, results)
 
     print("\n" + "=" * 80)
-    print("2. Case Insensitive Match")
+    print("2. Case Sensitive Mismatch")
     print("=" * 80)
     text = "HELLO WORLD! This is a TEST string."
     subtext = "hello world"
@@ -134,15 +135,15 @@ def run_examples():
     print("3. Partial Match with Replacements")
     print("=" * 80)
     text = "The quick brown fox jumps over the lazy dog"
-    subtext = "The quack brown fox jumped over the dog"
+    subtext = "The Quick Brown fox jumped over the dog"
     results = calculate_string_similarity(text, subtext)
     print_comparison_details(text, subtext, results)
 
     print("\n" + "=" * 80)
     print("4. Match with Special Characters")
     print("=" * 80)
-    text = "Email: user@example.com, Phone: (123) 456-7890"
-    subtext = "user@example.com"
+    text = "Email: User@Example.com, Phone: (123) 456-7890"
+    subtext = "User@Example.com"
     results = calculate_string_similarity(text, subtext)
     print_comparison_details(text, subtext, results)
 
@@ -157,17 +158,17 @@ def run_examples():
     print("\n" + "=" * 80)
     print("6. Multi-line Text Match")
     print("=" * 80)
-    text = """First line of text
-    Second line with different content
-    Third line here"""
-    subtext = "Second line with similar content"
+    text = """First Line of text
+    Second Line with different content
+    Third Line here"""
+    subtext = "Second Line with similar content"
     results = calculate_string_similarity(text, subtext)
     print_comparison_details(text, subtext, results)
 
     print("\n" + "=" * 80)
     print("7. Unicode Characters Match")
     print("=" * 80)
-    text = "Hello 👋 World! 🌍 Have a nice day! ⭐"
+    text = "Hello 👋 World! 🌍 Have a Nice Day! ⭐"
     subtext = "World! 🌍"
     results = calculate_string_similarity(text, subtext)
     print_comparison_details(text, subtext, results)
@@ -175,15 +176,15 @@ def run_examples():
     print("\n" + "=" * 80)
     print("8. Whitespace Handling")
     print("=" * 80)
-    text = "This    has    multiple    spaces    between    words"
-    subtext = "has multiple spaces"
+    text = "This    Has    Multiple    Spaces    Between    Words"
+    subtext = "Has Multiple Spaces"
     results = calculate_string_similarity(text, subtext)
     print_comparison_details(text, subtext, results)
 
     print("\n" + "=" * 80)
     print("9. No Match Case")
     print("=" * 80)
-    text = "Completely different text"
+    text = "Completely Different Text"
     subtext = "No matching content here"
     results = calculate_string_similarity(text, subtext)
     print_comparison_details(text, subtext, results)
@@ -192,7 +193,7 @@ def run_examples():
     print("10. Address Matching Example")
     print("=" * 80)
     text = "OFFICE OF ACQUISITION MANAGEMENT (A/LM/AQM) PO BOX 9115 ROSSLYN STATION US DEPARTMENT OF STATE ARLINGTON, VA 22219"
-    subtext = "A/LM/AQM) BOX 9115"
+    subtext = "A/LM/AQM) PO BOX 9115"
     results = calculate_string_similarity(text, subtext)
     print_comparison_details(text, subtext, results)
 
