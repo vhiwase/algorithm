@@ -1,109 +1,106 @@
 # Algorithm Collection
 
-A curated collection of various algorithms implemented in Python, focusing on efficiency, readability, and practical applications.
+A curated collection of Python algorithms focusing on efficiency and practical applications.
 
 ## Available Algorithms
 
 ### String Algorithms
-- [String Similarity Metrics](string_matching.py) - Calculate detailed similarity metrics between strings using sequence matching
+- [String Similarity Metrics](string_matching.py) - Calculate similarity metrics between strings using sequence matching
 
-## Installation
+## Quick Start
 
 ```bash
-# Clone the repository
 git clone https://github.com/vaibhavhiwase/algorithm.git
-
-# Navigate to the directory
 cd algorithm
 ```
 
-No additional installation is required as all implementations use only Python standard library modules.
+## String Similarity Metrics
 
-## Algorithms Details
-
-### String Similarity Metrics
-
-#### Features
-- Compare strings using sequence matching algorithms
-- Calculate multiple similarity metrics:
-  - Character-level matching scores
-  - Gap analysis
-  - Insertion detection
-  - Replacement identification
-- Case-insensitive comparison
-- Detailed position tracking of differences
-- Efficient substring similarity analysis
-
-#### Usage
-
+### Basic Usage
 ```python
 from string_matching import calculate_string_similarity
 
-# Example usage
-text = 'OFFICE OF ACQUISITION MANAGEMENT (A/LM/AQM) PO BOX 9115 ROSSLYN STATION US DEPARTMENT OF STATE ARLINGTON, VA 22219'
-subtext = 'A/LM/AQM) BOX 9115'
-
-# Calculate similarity metrics
+text = "Hello World! This is a test."
+subtext = "Hello world"
 results = calculate_string_similarity(text, subtext)
-
-# Print results
-from pprint import pprint
-pprint(results)
 ```
 
-#### Output Format
+### Example Output
+```python
+# Case 1: Exact Match
+text = "Hello World!"
+subtext = "World"
+results = calculate_string_similarity(text, subtext)
+{
+    'dissimilarity_score': 0,
+    'text_length': 12,
+    'subtext_length': 5,
+    'matched_char_count': 5,
+    'unmatched_char_count': 0,
+    'gap_char_count': 0,
+    'inserted_char_count': 0,
+    'replaced_char_count': 0
+}
 
-The function returns a dictionary containing the following similarity metrics:
+# Case 2: Partial Match with Replacements
+text = "The quick brown fox"
+subtext = "The quack brown"
+results = calculate_string_similarity(text, subtext)
+{
+    'dissimilarity_score': 2,
+    'text_length': 19,
+    'subtext_length': 14,
+    'matched_char_count': 12,
+    'unmatched_char_count': 2,
+    'gap_char_count': 0,
+    'inserted_char_count': 0,
+    'replaced_char_count': 2
+}
 
-- `dissimilarity_score`: Combined score of differences (lower is better)
-- `text_length`: Total length of the main text
-- `subtext_length`: Total length of the subtext
-- `unmatched_char_count`: Number of characters that don't match exactly
-- `matched_char_count`: Number of characters that match exactly
-- `gap_char_count`: Number of characters in gaps between matches
-- `inserted_char_count`: Number of extra characters
-- `replaced_char_count`: Number of replaced characters
+# Case 3: Unicode Support
+text = "Hello 👋 World! 🌍"
+subtext = "World! 🌍"
+results = calculate_string_similarity(text, subtext)
+{
+    'dissimilarity_score': 0,
+    'text_length': 15,
+    'subtext_length': 8,
+    'matched_char_count': 8,
+    'unmatched_char_count': 0,
+    'gap_char_count': 0,
+    'inserted_char_count': 0,
+    'replaced_char_count': 0
+}
+```
 
-#### How It Works
+### Features
+- Case-insensitive comparison
+- Unicode support (including emojis)
+- Detailed similarity metrics
+- Handles special characters and whitespace
 
-The utility uses Python's `difflib.SequenceMatcher` to perform detailed string comparisons. It:
+### Testing
+```bash
+python -m unittest test_string_matching.py -v
+```
 
-1. Converts all text to lowercase for case-insensitive matching
-2. Identifies exact matches, replacements, and insertions
-3. Calculates gaps between matching segments
-4. Computes various similarity metrics based on the comparison results
+Test coverage includes:
+- Basic functionality (exact/partial matches)
+- Edge cases (empty strings, long texts)
+- Special cases (Unicode, whitespace, numbers)
 
-## General Information
-
-### Dependencies
-- Python 3.6+
-- Standard library modules only:
-  - difflib
-  - typing
-
-### Contributing
-Contributions are welcome! To contribute:
-1. Fork the repository
+## Contributing
+1. Fork and clone the repository
 2. Create your feature branch
-3. Implement your algorithm
-4. Add appropriate documentation and examples
-5. Submit a Pull Request
+3. Add tests and documentation
+4. Submit a Pull Request
 
-### Future Additions
-The following categories of algorithms will be added in the future:
-- Sorting Algorithms
-- Search Algorithms
-- Graph Algorithms
-- Dynamic Programming
-- Machine Learning Algorithms
-- Data Structure Implementations
-- Cryptography Algorithms
-- Optimization Algorithms
+## Dependencies
+- Python 3.6+
+- Standard library only (difflib, typing, unittest)
 
-### License
+## License
+[MIT License](LICENSE.txt)
 
-This project is licensed under the MIT License - see the [LICENSE.txt](LICENSE.txt) file for details.
-
-### Author
-
+## Author
 Vaibhav Hiwase 

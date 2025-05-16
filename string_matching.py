@@ -98,19 +98,104 @@ def calculate_string_similarity(text: str, subtext: str) -> Dict:
     }
 
 
-if __name__ == '__main__':
-    # Example usage
-    sample_text = 'OFFICE OF ACQUISITION MANAGEMENT (A/LM/AQM) PO BOX 9115 ROSSLYN STATION US DEPARTMENT OF STATE ARLINGTON, VA 22219'
-    sample_subtext = 'A/LM/AQM) BOX 9115'
-    
-    # Show detailed comparison
-    print("Detailed comparison:")
-    for operation, src_text, tgt_text, src_pos, tgt_pos in compare_strings(sample_text, sample_subtext):
+def print_comparison_details(text: str, subtext: str, results: Dict):
+    """Helper function to print detailed comparison results."""
+    print(f"\nComparing:")
+    print(f"Text   : '{text}'")
+    print(f"Subtext: '{subtext}'")
+    print("\nDetailed comparison:")
+    for operation, src_text, tgt_text, src_pos, tgt_pos in compare_strings(text, subtext):
         print(f"{operation.upper():<7} at source[{src_pos}:{src_pos+len(src_text)}], "
               f"target[{tgt_pos}:{tgt_pos+len(tgt_text)}]: '{src_text}' → '{tgt_text}'")
+    print("\nMetrics:")
+    for key, value in results.items():
+        print(f"{key:<20}: {value}")
+
+def run_examples():
+    """Run various examples demonstrating different string matching scenarios."""
     
-    # Calculate similarity metrics
-    print("\nSimilarity metrics:")
-    results = calculate_string_similarity(sample_text, sample_subtext)
-    from pprint import pprint
-    pprint(results)
+    print("=" * 80)
+    print("1. Exact Substring Match")
+    print("=" * 80)
+    text = "Hello World! This is a test string."
+    subtext = "This is"
+    results = calculate_string_similarity(text, subtext)
+    print_comparison_details(text, subtext, results)
+
+    print("\n" + "=" * 80)
+    print("2. Case Insensitive Match")
+    print("=" * 80)
+    text = "HELLO WORLD! This is a TEST string."
+    subtext = "hello world"
+    results = calculate_string_similarity(text, subtext)
+    print_comparison_details(text, subtext, results)
+
+    print("\n" + "=" * 80)
+    print("3. Partial Match with Replacements")
+    print("=" * 80)
+    text = "The quick brown fox jumps over the lazy dog"
+    subtext = "The quack brown fox jumped over the dog"
+    results = calculate_string_similarity(text, subtext)
+    print_comparison_details(text, subtext, results)
+
+    print("\n" + "=" * 80)
+    print("4. Match with Special Characters")
+    print("=" * 80)
+    text = "Email: user@example.com, Phone: (123) 456-7890"
+    subtext = "user@example.com"
+    results = calculate_string_similarity(text, subtext)
+    print_comparison_details(text, subtext, results)
+
+    print("\n" + "=" * 80)
+    print("5. Match with Numbers and Punctuation")
+    print("=" * 80)
+    text = "Invoice #12345 - Total: $199.99 (Due: 2024-01-31)"
+    subtext = "Invoice #12345"
+    results = calculate_string_similarity(text, subtext)
+    print_comparison_details(text, subtext, results)
+
+    print("\n" + "=" * 80)
+    print("6. Multi-line Text Match")
+    print("=" * 80)
+    text = """First line of text
+    Second line with different content
+    Third line here"""
+    subtext = "Second line with similar content"
+    results = calculate_string_similarity(text, subtext)
+    print_comparison_details(text, subtext, results)
+
+    print("\n" + "=" * 80)
+    print("7. Unicode Characters Match")
+    print("=" * 80)
+    text = "Hello 👋 World! 🌍 Have a nice day! ⭐"
+    subtext = "World! 🌍"
+    results = calculate_string_similarity(text, subtext)
+    print_comparison_details(text, subtext, results)
+
+    print("\n" + "=" * 80)
+    print("8. Whitespace Handling")
+    print("=" * 80)
+    text = "This    has    multiple    spaces    between    words"
+    subtext = "has multiple spaces"
+    results = calculate_string_similarity(text, subtext)
+    print_comparison_details(text, subtext, results)
+
+    print("\n" + "=" * 80)
+    print("9. No Match Case")
+    print("=" * 80)
+    text = "Completely different text"
+    subtext = "No matching content here"
+    results = calculate_string_similarity(text, subtext)
+    print_comparison_details(text, subtext, results)
+
+    print("\n" + "=" * 80)
+    print("10. Address Matching Example")
+    print("=" * 80)
+    text = "OFFICE OF ACQUISITION MANAGEMENT (A/LM/AQM) PO BOX 9115 ROSSLYN STATION US DEPARTMENT OF STATE ARLINGTON, VA 22219"
+    subtext = "A/LM/AQM) BOX 9115"
+    results = calculate_string_similarity(text, subtext)
+    print_comparison_details(text, subtext, results)
+
+
+if __name__ == '__main__':
+    run_examples()
