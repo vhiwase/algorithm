@@ -129,10 +129,10 @@ def print_comparison_details(text: str, subtext: str, results: Dict):
 
 
 def run_examples():
-    """Run various examples demonstrating different string matching scenarios."""
+    """Run examples demonstrating string matching behavior with different scenarios."""
     
-    print("=" * 80)
-    print("1. Case Sensitive Exact Match")
+    print("\n" + "=" * 80)
+    print("1. Basic Exact Match")
     print("=" * 80)
     text = "Hello World! This is a test string."
     subtext = "This is"
@@ -140,7 +140,7 @@ def run_examples():
     print_comparison_details(text, subtext, results)
 
     print("\n" + "=" * 80)
-    print("2. Case Sensitive Mismatch")
+    print("2. Case Sensitivity Example")
     print("=" * 80)
     text = "HELLO WORLD! This is a TEST string."
     subtext = "hello world"
@@ -148,133 +148,39 @@ def run_examples():
     print_comparison_details(text, subtext, results)
 
     print("\n" + "=" * 80)
-    print("3. Partial Match with Replacements")
+    print("3. Partial Match with Special Characters")
     print("=" * 80)
-    text = "The quick brown fox jumps over the lazy dog"
-    subtext = "The Quick Brown fox jumped over the dog"
+    text = "User ID: #12345 (active) - user@example.com"
+    subtext = "#12345 - user@example"
     results = calculate_string_similarity(text, subtext)
     print_comparison_details(text, subtext, results)
 
     print("\n" + "=" * 80)
-    print("4. Match with Special Characters")
+    print("4. Whitespace Handling")
     print("=" * 80)
-    text = "Email: User@Example.com, Phone: (123) 456-7890"
-    subtext = "User@Example.com"
+    text = "The    quick    brown    fox"
+    subtext = "quick brown fox"
     results = calculate_string_similarity(text, subtext)
     print_comparison_details(text, subtext, results)
 
     print("\n" + "=" * 80)
-    print("5. Match with Numbers and Punctuation")
+    print("5. Multi-line Text")
     print("=" * 80)
-    text = "Invoice #12345 - Total: $199.99 (Due: 2024-01-31)"
-    subtext = "Invoice #12345"
+    text = """First line of text
+    Second line with important data
+    Third line here"""
+    subtext = "Second line with data"
     results = calculate_string_similarity(text, subtext)
     print_comparison_details(text, subtext, results)
 
     print("\n" + "=" * 80)
-    print("6. Multi-line Text Match")
-    print("=" * 80)
-    text = """First Line of text
-    Second Line with different content
-    Third Line here"""
-    subtext = "Second Line with similar content"
-    results = calculate_string_similarity(text, subtext)
-    print_comparison_details(text, subtext, results)
-
-    print("\n" + "=" * 80)
-    print("7. Unicode Characters Match")
+    print("6. Unicode and Emoji")
     print("=" * 80)
     text = "Hello 👋 World! 🌍 Have a Nice Day! ⭐"
     subtext = "World! 🌍"
     results = calculate_string_similarity(text, subtext)
     print_comparison_details(text, subtext, results)
 
-    print("\n" + "=" * 80)
-    print("8. Whitespace Handling")
-    print("=" * 80)
-    text = "This    Has    Multiple    Spaces    Between    Words"
-    subtext = "Has Multiple Spaces"
-    results = calculate_string_similarity(text, subtext)
-    print_comparison_details(text, subtext, results)
-
-    print("\n" + "=" * 80)
-    print("9. No Match Case")
-    print("=" * 80)
-    text = "Completely Different Text"
-    subtext = "No matching content here"
-    results = calculate_string_similarity(text, subtext)
-    print_comparison_details(text, subtext, results)
-
-    print("\n" + "=" * 80)
-    print("10. Address Matching Example")
-    print("=" * 80)
-    text = "OFFICE OF ACQUISITION MANAGEMENT (A/LM/AQM) PO BOX 9115 ROSSLYN STATION US DEPARTMENT OF STATE ARLINGTON, VA 22219"
-    subtext = "A/LM/AQM) PO BOX 9115"
-    results = calculate_string_similarity(text, subtext)
-    print_comparison_details(text, subtext, results)
-
-
-def compare_strings_examples():
-    """
-    Examples demonstrating how SequenceMatcher works with different junk functions.
-    
-    The junk parameter in SequenceMatcher is a function that takes a character and returns
-    True if that character should be considered junk (ignored in matching).
-    
-    1. None as junk (default):
-       - No characters are considered junk
-       - But it uses a heuristic to speed up matching by ignoring certain characters
-    
-    2. lambda x: False as junk:
-       - Explicitly tells SequenceMatcher to not consider any character as junk
-       - Forces strict character-by-character comparison
-       - Best for case-sensitive matching
-    
-    3. Custom junk function:
-       - Can define which characters to ignore
-       - Useful for specific matching requirements
-    """
-    # Example 1: Default behavior (junk=None)
-    print("\nExample 1: Default behavior (junk=None)")
-    text1 = "The    quick brown    fox"
-    text2 = "The quick    brown fox"
-    matcher = difflib.SequenceMatcher(None, text1, text2)
-    print(f"Comparing: '{text1}' with '{text2}'")
-    print(f"Ratio: {matcher.ratio():.3f}")
-    print("Matching blocks:", matcher.get_matching_blocks())
-    
-    # Example 2: No junk characters (our current implementation)
-    print("\nExample 2: No junk characters (junk=lambda x: False)")
-    matcher = difflib.SequenceMatcher(lambda x: False, text1, text2)
-    print(f"Comparing: '{text1}' with '{text2}'")
-    print(f"Ratio: {matcher.ratio():.3f}")
-    print("Matching blocks:", matcher.get_matching_blocks())
-    
-    # Example 3: Custom junk function (ignore spaces)
-    print("\nExample 3: Custom junk function (ignore spaces)")
-    matcher = difflib.SequenceMatcher(lambda x: x.isspace(), text1, text2)
-    print(f"Comparing: '{text1}' with '{text2}'")
-    print(f"Ratio: {matcher.ratio():.3f}")
-    print("Matching blocks:", matcher.get_matching_blocks())
-    
-    # Example 4: Case sensitivity demonstration
-    print("\nExample 4: Case sensitivity demonstration")
-    text1 = "Hello World"
-    text2 = "HELLO world"
-    
-    # Without junk function
-    matcher = difflib.SequenceMatcher(lambda x: False, text1, text2)
-    print(f"Comparing: '{text1}' with '{text2}'")
-    print(f"Strict comparison ratio: {matcher.ratio():.3f}")
-    print("Operations:", list(matcher.get_opcodes()))
-    
-    # Case-insensitive comparison (for demonstration)
-    matcher = difflib.SequenceMatcher(lambda x: False, text1.lower(), text2.lower())
-    print(f"\nCase-insensitive ratio: {matcher.ratio():.3f}")
-    print("Operations:", list(matcher.get_opcodes()))
-
 
 if __name__ == '__main__':
-    compare_strings_examples()
-    print("\nOriginal examples:")
     run_examples()
