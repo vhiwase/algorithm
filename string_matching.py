@@ -17,7 +17,8 @@ def compare_strings(source_text: str, target_text: str) -> List[Tuple[str, str, 
         List of tuples containing (operation_type, source_substring, target_substring, source_start, target_start)
         where operation_type can be 'equal', 'replace', 'delete', or 'insert'
     """
-    sequence_matcher = difflib.SequenceMatcher(None, source_text, target_text)
+    # Create a new sequence matcher with case-sensitive comparison
+    sequence_matcher = difflib.SequenceMatcher(lambda x: False, source_text, target_text)
     differences = []
     for operation, src_start, src_end, tgt_start, tgt_end in sequence_matcher.get_opcodes():
         differences.append((operation, source_text[src_start:src_end], 
@@ -44,6 +45,9 @@ def calculate_string_similarity(text: str, subtext: str) -> Dict:
             - gap_char_count: Number of characters in gaps between matches
             - inserted_char_count: Number of extra characters
             - replaced_char_count: Number of replaced characters
+            - matches: List of matching text segments
+            - replacements: List of tuples containing (original_text, replacement_text)
+            - gaps: List of gap text segments
     """
     matching_segments = []
 
@@ -62,6 +66,18 @@ def calculate_string_similarity(text: str, subtext: str) -> Dict:
         if end_current < start_next:
             unmatched_segments.append((end_current, start_next))
     
+    # Collect matching segments with actual text
+    exact_matches = [text[t_range[0]:t_range[1]] 
+                    for op, t_range, _ in matching_segments if op == 'equal']
+    
+    # Collect replacement segments with actual text pairs
+    replacements = [(text[t_range[0]:t_range[1]], subtext[s_range[0]:s_range[1]]) 
+                   for op, t_range, s_range in matching_segments if op == 'replace']
+    
+    # Collect gaps with actual text
+    gaps = [text[start:end] for start, end in unmatched_segments]
+    
+    # Calculate metrics
     gap_lengths = [(gap[1]-gap[0]) for gap in unmatched_segments]
     gap_char_count = sum(gap_lengths)
 
@@ -94,19 +110,19 @@ def calculate_string_similarity(text: str, subtext: str) -> Dict:
         'matched_char_count': matched_char_count,
         'gap_char_count': gap_char_count,
         'inserted_char_count': inserted_char_count,
-        'replaced_char_count': replaced_char_count
+        'replaced_char_count': replaced_char_count,
+        'matches': exact_matches,
+        'replacements': replacements,
+        'gaps': gaps
     }
 
 
 def print_comparison_details(text: str, subtext: str, results: Dict):
     """Helper function to print detailed comparison results."""
-    print(f"\nComparing:")
-    print(f"Text   : '{text}'")
-    print(f"Subtext: '{subtext}'")
-    print("\nDetailed comparison:")
-    for operation, src_text, tgt_text, src_pos, tgt_pos in compare_strings(text, subtext):
-        print(f"{operation.upper():<7} at source[{src_pos}:{src_pos+len(src_text)}], "
-              f"target[{tgt_pos}:{tgt_pos+len(tgt_text)}]: '{src_text}' → '{tgt_text}'")
+    print("\nInput Strings:")
+    print(f"Text    : '{text}'")
+    print(f"Subtext : '{subtext}'")
+    
     print("\nMetrics:")
     for key, value in results.items():
         print(f"{key:<20}: {value}")
@@ -198,5 +214,67 @@ def run_examples():
     print_comparison_details(text, subtext, results)
 
 
+def compare_strings_examples():
+    """
+    Examples demonstrating how SequenceMatcher works with different junk functions.
+    
+    The junk parameter in SequenceMatcher is a function that takes a character and returns
+    True if that character should be considered junk (ignored in matching).
+    
+    1. None as junk (default):
+       - No characters are considered junk
+       - But it uses a heuristic to speed up matching by ignoring certain characters
+    
+    2. lambda x: False as junk:
+       - Explicitly tells SequenceMatcher to not consider any character as junk
+       - Forces strict character-by-character comparison
+       - Best for case-sensitive matching
+    
+    3. Custom junk function:
+       - Can define which characters to ignore
+       - Useful for specific matching requirements
+    """
+    # Example 1: Default behavior (junk=None)
+    print("\nExample 1: Default behavior (junk=None)")
+    text1 = "The    quick brown    fox"
+    text2 = "The quick    brown fox"
+    matcher = difflib.SequenceMatcher(None, text1, text2)
+    print(f"Comparing: '{text1}' with '{text2}'")
+    print(f"Ratio: {matcher.ratio():.3f}")
+    print("Matching blocks:", matcher.get_matching_blocks())
+    
+    # Example 2: No junk characters (our current implementation)
+    print("\nExample 2: No junk characters (junk=lambda x: False)")
+    matcher = difflib.SequenceMatcher(lambda x: False, text1, text2)
+    print(f"Comparing: '{text1}' with '{text2}'")
+    print(f"Ratio: {matcher.ratio():.3f}")
+    print("Matching blocks:", matcher.get_matching_blocks())
+    
+    # Example 3: Custom junk function (ignore spaces)
+    print("\nExample 3: Custom junk function (ignore spaces)")
+    matcher = difflib.SequenceMatcher(lambda x: x.isspace(), text1, text2)
+    print(f"Comparing: '{text1}' with '{text2}'")
+    print(f"Ratio: {matcher.ratio():.3f}")
+    print("Matching blocks:", matcher.get_matching_blocks())
+    
+    # Example 4: Case sensitivity demonstration
+    print("\nExample 4: Case sensitivity demonstration")
+    text1 = "Hello World"
+    text2 = "HELLO world"
+    
+    # Without junk function
+    matcher = difflib.SequenceMatcher(lambda x: False, text1, text2)
+    print(f"Comparing: '{text1}' with '{text2}'")
+    print(f"Strict comparison ratio: {matcher.ratio():.3f}")
+    print("Operations:", list(matcher.get_opcodes()))
+    
+    # Case-insensitive comparison (for demonstration)
+    matcher = difflib.SequenceMatcher(lambda x: False, text1.lower(), text2.lower())
+    print(f"\nCase-insensitive ratio: {matcher.ratio():.3f}")
+    print("Operations:", list(matcher.get_opcodes()))
+
+
 if __name__ == '__main__':
+    compare_strings_examples()
+    print("\nOriginal examples:")
     run_examples()
