@@ -1,11 +1,33 @@
 # Algorithm Collection
 
+[![Python Version](https://img.shields.io/badge/python-3.6%2B-blue)](https://www.python.org/downloads/)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE.txt)
+[![Code Style](https://img.shields.io/badge/code%20style-black-black)](https://github.com/psf/black)
+[![Documentation](https://img.shields.io/badge/docs-latest-brightgreen)](https://github.com/vaibhavhiwase/algorithm#readme)
+[![Tests](https://img.shields.io/badge/tests-passing-brightgreen)](https://github.com/vaibhavhiwase/algorithm/actions)
+
 A curated collection of Python algorithms focusing on efficiency and practical applications.
+
+## Table of Contents
+- [Available Algorithms](#available-algorithms)
+  - [String Algorithms](#string-algorithms)
+  - [Financial Algorithms](#financial-algorithms)
+- [Quick Start](#quick-start)
+- [Algorithm Details](#algorithm-details)
+  - [String Similarity Metrics](#string-similarity-metrics)
+  - [Home Loan EMI Calculator](#home-loan-emi-calculator)
+- [Contributing](#contributing)
+- [Dependencies](#dependencies)
+- [License](#license)
+- [Author](#author)
 
 ## Available Algorithms
 
 ### String Algorithms
 - [String Similarity Metrics](string_matching.py) - Calculate similarity metrics between strings using sequence matching
+
+### Financial Algorithms
+- [Home Loan EMI Calculator](loan_emi_simulator.py) - Calculate and simulate home loan repayments with flexible EMI, lump sum payments, and target month calculations
 
 ## Quick Start
 
@@ -14,9 +36,14 @@ git clone https://github.com/vaibhavhiwase/algorithm.git
 cd algorithm
 ```
 
-## String Similarity Metrics
+## Algorithm Details
 
-### Basic Usage
+### String Similarity Metrics
+
+#### Overview
+A robust string comparison algorithm that provides detailed similarity metrics between two strings, supporting case-sensitive matching, Unicode characters, and comprehensive difference tracking.
+
+#### Basic Usage
 ```python
 from string_matching import calculate_string_similarity
 
@@ -25,7 +52,7 @@ subtext = "Hello world"
 results = calculate_string_similarity(text, subtext)
 ```
 
-### Features
+#### Features
 - Case-sensitive comparison
 - Unicode support (including emojis)
 - Detailed similarity metrics
@@ -139,6 +166,76 @@ Test coverage includes:
 - Comprehensive index tracking
 - Junk parameter behavior
 
+### Home Loan EMI Calculator
+
+#### Overview
+A comprehensive home loan calculator that simulates loan repayments with support for flexible EMI calculations, lump sum payments, and target month calculations.
+
+#### Basic Usage
+```python
+from loan_emi_simulator import simulate_home_loan
+
+# Example 1: Fixed EMI
+simulate_home_loan(
+    loan_amount=1712369,
+    annual_interest_rate=9.2,
+    emi=61200
+)
+
+# Example 2: Fixed EMI with Lump Sum Payments
+simulate_home_loan(
+    loan_amount=1712369,
+    annual_interest_rate=9.2,
+    emi=61200,
+    lump_sums={6: 100000, 12: 50000}
+)
+
+# Example 3: Target Months (calculate EMI)
+simulate_home_loan(
+    loan_amount=1712369,
+    annual_interest_rate=9.2,
+    target_months=24
+)
+```
+
+#### Features
+- Calculate EMI for given principal, interest rate, and loan term
+- Simulate complete loan repayment schedule
+- Support for lump sum payments at specific months
+- Option to calculate EMI based on target repayment period
+- Detailed monthly breakdown of payments
+- Summary statistics including total interest paid and total amount paid
+
+#### Testing
+The calculator includes comprehensive test cases covering:
+- Basic EMI calculations
+- Zero interest rate scenarios
+- Large loan amounts
+- Fixed EMI payments
+- Lump sum payments
+- Target month calculations
+- Currency formatting
+- Edge cases (small amounts, high rates)
+
+Run tests using:
+```bash
+python -m unittest test_loan_emi_simulator.py -v
+```
+
+#### Dependencies
+- Python 3.x
+- pandas
+
+#### Notes
+- EMI is calculated using the standard formula: EMI = P * r * (1 + r)^n / ((1 + r)^n - 1)
+- All amounts are formatted in Indian Rupees (₹)
+- The schedule shows detailed breakdown of each payment including:
+  - EMI
+  - Lump sum payments
+  - Interest paid
+  - Principal paid
+  - Remaining balance
+
 ## Contributing
 1. Fork and clone the repository
 2. Create your feature branch
@@ -147,7 +244,8 @@ Test coverage includes:
 
 ## Dependencies
 - Python 3.6+
-- Standard library only (difflib, typing, unittest)
+- Standard library (difflib, typing, unittest)
+- pandas (for homeloan calculator)
 
 ## License
 [MIT License](LICENSE.txt)

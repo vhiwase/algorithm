@@ -76,6 +76,8 @@ def simulate_home_loan(
     print(f"  Total Months: {month}")
     print(f"  Total Interest Paid: {INR(total_interest_paid)}")
     print(f"  Total Paid: {INR(total_interest_paid + loan_amount)}")
+    if df.empty:
+        raise ValueError("Loan amount must be greater than zero and result in a valid schedule.")
     print(f"  Last EMI: {df.iloc[-1]['EMI']}")
     if any(df['Lump Sum']):
         print(f"  Lump Sums Paid: {', '.join([f'M{m}: {l}' for m, l in zip(df['Month'], df['Lump Sum']) if l])}")
