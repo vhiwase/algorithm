@@ -154,3 +154,47 @@ Test coverage includes:
 
 ## Author
 Vaibhav Hiwase 
+
+# Home Loan Repayment Simulator
+
+This project simulates home loan repayment strategies, allowing you to experiment with fixed EMI, additional lump sum payments, and target months for loan completion.
+
+## Features
+
+- Calculate EMI based on loan amount, interest rate, and tenure.
+- Simulate repayment with fixed EMI and optional lump sum payments.
+- Calculate EMI required to finish the loan in a target number of months.
+- Suggest the best month to pay a lump sum amount to minimize interest paid.
+
+## Usage
+
+Run the script to see examples of different repayment strategies:
+
+```bash
+python homeloan.py
+```
+
+## Examples
+
+1. **Fixed EMI**: Simulate repayment with a fixed EMI.
+2. **Fixed EMI + Lump Sums**: Simulate repayment with a fixed EMI and additional lump sum payments.
+3. **Pay off in Target Months**: Calculate the EMI required to finish the loan in a specified number of months.
+4. **Suggest Best Lump Sum Strategy**: Determine the best month to pay a lump sum amount to minimize interest paid.
+
+## Requirements
+
+- Python 3.x
+- pandas
+
+## Installation
+
+1. Clone the repository.
+2. Install the required packages:
+
+```bash
+pip install -r requirements.txt
+```
+
+## License
+
+This project is licensed under the MIT License. 
