@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Loan EMI Simulation Results</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Simulation Results</h1>
+        <div class="mt-4">
+            <h2>Summary</h2>
+            <table class="table">
+                {% for key, value in summary.items() %}
+                <tr>
+                    <th>{{ key }}</th>
+                    <td>{{ value }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="mt-4">
+            <h2>Repayment Schedule</h2>
+            {{ schedule_html | safe }}
+        </div>
+    </div>
+</body>
+</html>

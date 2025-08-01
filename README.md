@@ -36,6 +36,28 @@ git clone https://github.com/vaibhavhiwase/algorithm.git
 cd algorithm
 ```
 
+## Running Demos
+
+To run the web-based demos for the Loan EMI Simulator and String Matching:
+
+1.  **Install Dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+2.  **Run the Flask Application:**
+    ```bash
+    FLASK_APP=app.py flask run --port=5000
+    ```
+
+3.  **Access Demos:**
+    Once the server is running, you can access the demos in your web browser:
+    *   **Main Demo Page:** `http://127.0.0.1:5000/`
+    *   **Loan EMI Simulator:** `http://127.0.0.1:5000/loan_emi_simulator/`
+    *   **String Matching:** `http://127.0.0.1:5000/string_matching/`
+
+    *(Note: The server runs in debug mode, so changes to the code will automatically restart the server.)*
+
 ## Algorithm Details
 
 ### String Similarity Metrics

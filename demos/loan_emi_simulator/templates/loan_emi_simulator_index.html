@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Loan EMI Simulator</title>
+</head>
+<body>
+    <h1>Loan EMI Simulator</h1>
+    <form action="/loan_emi_simulator/simulate" method="post">
+        <label for="loan_amount">Loan Amount:</label>
+        <input type="text" id="loan_amount" name="loan_amount" value="1712369"><br><br>
+        <label for="annual_interest_rate">Annual Interest Rate (%):</label>
+        <input type="text" id="annual_interest_rate" name="annual_interest_rate" value="9.2"><br><br>
+        <label for="emi">EMI:</label>
+        <input type="text" id="emi" name="emi" value="61200"><br><br>
+        <input type="submit" value="Simulate">
+    </form>
+</body>
+</html>
