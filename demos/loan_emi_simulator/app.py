@@ -17,16 +17,19 @@ def simulate():
     annual_interest_rate = float(request.form['annual_interest_rate'])
     emi = float(request.form['emi'])
     
-    schedule_df = simulate_home_loan(loan_amount, annual_interest_rate, emi)
-    
-    summary = {
-        'Total Months': len(schedule_df),
-        'Total Interest Paid': schedule_df['Interest Paid'].apply(lambda x: float(x.replace('₹', '').replace(',', ''))).sum(),
-        'Total Paid': float(schedule_df.iloc[-1]['Remaining Balance'].replace('₹', '').replace(',', '')) + float(schedule_df['Principal Paid'].apply(lambda x: float(x.replace('₹', '').replace(',', ''))).sum()),
-        'Last EMI': schedule_df.iloc[-1]['EMI']
-    }
-    
-    # Convert dataframe to html
-    schedule_html = schedule_df.to_html(classes='table table-striped table-hover', index=False)
+    try:
+        schedule_df = simulate_home_loan(loan_amount, annual_interest_rate, emi)
+        
+        summary = {
+            'Total Months': len(schedule_df),
+            'Total Interest Paid': schedule_df['Interest Paid'].apply(lambda x: float(x.replace('₹', '').replace(',', ''))).sum(),
+            'Total Paid': float(schedule_df.iloc[-1]['Remaining Balance'].replace('₹', '').replace(',', '')) + float(schedule_df['Principal Paid'].apply(lambda x: float(x.replace('₹', '').replace(',', ''))).sum()),
+            'Last EMI': schedule_df.iloc[-1]['EMI']
+        }
+        
+        # Convert dataframe to html
+        schedule_html = schedule_df.to_html(classes='table table-striped table-hover', index=False)
 
-    return render_template('results.html', summary=summary, schedule_html=schedule_html)
+        return render_template('results.html', summary=summary, schedule_html=schedule_html)
+    except ValueError as e:
+        return render_template('results.html', error_message=str(e))

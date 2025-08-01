@@ -42,9 +42,15 @@ def simulate_home_loan(
     elif emi is None:
         raise ValueError("You must specify either emi or target_months.")
 
-    while balance > 0:
+    MAX_MONTHS = 1200  # Safeguard to prevent infinite loops (100 years)
+
+    while balance > 0 and month < MAX_MONTHS:
         month += 1
         interest = balance * monthly_interest_rate
+        # Check if EMI is too low *after* interest is calculated for the current month
+        if emi < interest:
+            raise ValueError("EMI is too low to cover even the interest. Loan will never be repaid.")
+
         principal_payment = emi - interest
         lump_sum = lump_sums.get(month, 0)
         total_payment = principal_payment + lump_sum
