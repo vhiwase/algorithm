@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, jsonify
 from loan_emi_simulator import simulate_home_loan
 import pandas as pd
 
@@ -13,23 +13,44 @@ def index():
 
 @loan_emi_simulator_bp.route('/simulate', methods=['POST'])
 def simulate():
-    loan_amount = float(request.form['loan_amount'])
-    annual_interest_rate = float(request.form['annual_interest_rate'])
-    emi = float(request.form['emi'])
+    data = request.get_json()
+    loan_amount = float(data['loan_amount'])
+    annual_interest_rate = float(data['annual_interest_rate'])
+    emi = float(data['emi'])
     
     try:
         schedule_df = simulate_home_loan(loan_amount, annual_interest_rate, emi)
-        
-        summary = {
-            'Total Months': len(schedule_df),
-            'Total Interest Paid': schedule_df['Interest Paid'].apply(lambda x: float(x.replace('₹', '').replace(',', ''))).sum(),
-            'Total Paid': float(schedule_df.iloc[-1]['Remaining Balance'].replace('₹', '').replace(',', '')) + float(schedule_df['Principal Paid'].apply(lambda x: float(x.replace('₹', '').replace(',', ''))).sum()),
-            'Last EMI': schedule_df.iloc[-1]['EMI']
-        }
-        
-        # Convert dataframe to html
-        schedule_html = schedule_df.to_html(classes='table table-striped table-hover', index=False)
 
-        return render_template('results.html', summary=summary, schedule_html=schedule_html)
+        # Convert relevant columns to numeric, removing '₹' and ','
+        numeric_cols = ['EMI', 'Interest Paid', 'Principal Paid', 'Remaining Balance']
+        for col in numeric_cols:
+            if col in schedule_df.columns:
+                schedule_df[col] = schedule_df[col].astype(str).str.replace('₹', '').str.replace(',', '').replace('', '0').astype(float)
+
+        total_interest_payable = schedule_df['Interest Paid'].sum()
+        total_payment = schedule_df['EMI'].sum()
+        num_months = len(schedule_df)
+        num_years = num_months / 12
+
+        # Prepare schedule data for JSON response, mapping to frontend expectations
+        schedule_data = []
+        for i, row in schedule_df.iterrows():
+            opening_balance = loan_amount if i == 0 else schedule_df.loc[i-1, 'Remaining Balance'] + schedule_df.loc[i-1, 'Principal Paid']
+            schedule_data.append({
+                'month': int(row['Month']),
+                'opening_balance': opening_balance,
+                'emi': row['EMI'],
+                'interest': row['Interest Paid'],
+                'principal': row['Principal Paid'],
+                'closing_balance': row['Remaining Balance']
+            })
+
+        return jsonify({
+            'total_interest_payable': total_interest_payable,
+            'total_payment': total_payment,
+            'num_months': num_months,
+            'num_years': num_years,
+            'schedule': schedule_data
+        })
     except ValueError as e:
-        return render_template('results.html', error_message=str(e))
+        return jsonify({'error': str(e)}), 400

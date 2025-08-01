@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, jsonify
 from string_matching import calculate_string_similarity
 
 import os
@@ -12,7 +12,8 @@ def index():
 
 @string_matching_bp.route('/compare', methods=['POST'])
 def compare():
-    text = request.form['text']
-    subtext = request.form['subtext']
+    data = request.get_json()
+    text = data['text']
+    subtext = data['subtext']
     results = calculate_string_similarity(text, subtext)
-    return render_template('string_matching_results.html', text=text, subtext=subtext, results=results)
+    return jsonify({'matches': results})

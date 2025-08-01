@@ -10,7 +10,7 @@
 <body class="loan-emi-bg">
     <div class="container mt-5 p-4 rounded shadow-lg">
         <h1 class="mb-4 text-center text-primary">Loan EMI Simulator</h1>
-        <form action="/loan_emi_simulator/simulate" method="post" class="needs-validation" novalidate>
+        <form id="emiForm" class="needs-validation" novalidate>
             <div class="mb-3">
                 <label for="loan_amount" class="form-label">Loan Amount (₹):</label>
                 <input type="number" class="form-control" id="loan_amount" name="loan_amount" value="1712369" required min="1000" step="any">
@@ -36,6 +36,9 @@
                 <button type="submit" class="btn btn-primary btn-lg">Simulate Loan</button>
             </div>
         </form>
+        <div id="results" class="mt-4">
+            <!-- Results will be displayed here -->
+        </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -54,6 +57,81 @@
                     }, false)
                 })
         })()
+
+        document.getElementById('emiForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const form = event.target;
+            if (!form.checkValidity()) {
+                event.stopPropagation();
+                form.classList.add('was-validated');
+                return;
+            }
+
+            const formData = new FormData(form);
+            const loanAmount = formData.get('loan_amount');
+            const annualInterestRate = formData.get('annual_interest_rate');
+            const emi = formData.get('emi');
+
+            try {
+                const response = await fetch('/loan_emi_simulator/simulate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        loan_amount: parseFloat(loanAmount),
+                        annual_interest_rate: parseFloat(annualInterestRate),
+                        emi: parseFloat(emi)
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                const resultsDiv = document.getElementById('results');
+                resultsDiv.innerHTML = `
+                    <h2 class="text-center text-success">Simulation Results</h2>
+                    <p><strong>Total Interest Payable:</strong> ₹${data.total_interest_payable.toFixed(2)}</p>
+                    <p><strong>Total Payment:</strong> ₹${data.total_payment.toFixed(2)}</p>
+                    <p><strong>Number of Months:</strong> ${data.num_months}</p>
+                    <p><strong>Number of Years:</strong> ${data.num_years.toFixed(2)}</p>
+                    <h3 class="text-center text-info">Payment Schedule</h3>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Month</th>
+                                    <th>Opening Balance</th>
+                                    <th>EMI</th>
+                                    <th>Interest</th>
+                                    <th>Principal</th>
+                                    <th>Closing Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${data.schedule.map(row => `
+                                    <tr>
+                                        <td>${row.month}</td>
+                                        <td>₹${row.opening_balance.toFixed(2)}</td>
+                                        <td>₹${row.emi.toFixed(2)}</td>
+                                        <td>₹${row.interest.toFixed(2)}</td>
+                                        <td>₹${row.principal.toFixed(2)}</td>
+                                        <td>₹${row.closing_balance.toFixed(2)}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('results').innerHTML = `<p class="text-danger">Error simulating loan: ${error.message}</p>`;
+            }
+        });
     </script>
 </body>
 </html>
