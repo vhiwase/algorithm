@@ -27,6 +27,6 @@ def simulate():
     }
     
     # Convert dataframe to html
-    schedule_html = schedule_df.to_html(classes='table table-striped', index=False)
+    schedule_html = schedule_df.to_html(classes='table table-striped table-hover', index=False)
 
     return render_template('results.html', summary=summary, schedule_html=schedule_html)
