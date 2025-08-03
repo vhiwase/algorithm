@@ -8,7 +8,7 @@
 #     sys.path.append(src_path)
 
 import unittest
-from loan_emi_calculator import calculate_emi, simulate_home_loan, INR
+from financial_algorithms import calculate_emi, simulate_home_loan, INR
 
 __all__ = ['TestHomeLoan']
 

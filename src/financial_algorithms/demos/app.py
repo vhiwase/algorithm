@@ -1,19 +1,19 @@
 from flask import Blueprint, render_template, request, jsonify
-from loan_emi_calculator.core import simulate_home_loan
+from financial_algorithms import simulate_home_loan
 import pandas as pd
 import os
 from utils.logger_config import logger
 
-loan_emi_calculator_bp = Blueprint('loan_emi_calculator', __name__,
+financial_algorithms_bp = Blueprint('financial_algorithms', __name__,
                                 static_folder=os.path.join(os.path.dirname(__file__), 'static'),
                                 template_folder=os.path.join(os.path.dirname(__file__), 'templates'))
 
-@loan_emi_calculator_bp.route('/')
+@financial_algorithms_bp.route('/')
 def index():
     logger.info("Accessing loan_emi_calculator index page.")
     return render_template('loan_emi_calculator_index.html')
 
-@loan_emi_calculator_bp.route('/simulate', methods=['POST'])
+@financial_algorithms_bp.route('/simulate', methods=['POST'])
 def simulate():
     data = request.get_json()
     loan_amount = float(data['loan_amount'])

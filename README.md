@@ -24,10 +24,10 @@ A curated collection of Python algorithms focusing on efficiency and practical a
 ## Available Algorithms
 
 ### String Algorithms
-- [String Similarity Metrics](string_sequence_matching.py) - Calculate similarity metrics between strings using sequence matching
+- [String Similarity Metrics](src/string_algorithms/core.py) - Calculate similarity metrics between strings using sequence matching
 
 ### Financial Algorithms
-- [Home Loan EMI Calculator](loan_emi_calculator.py) - Calculate and simulate home loan repayments with flexible EMI, lump sum payments, and target month calculations
+- [Home Loan EMI Calculator](src/financial_algorithms/core.py) - Calculate and simulate home loan repayments with flexible EMI, lump sum payments, and target month calculations
 
 ## Quick Start
 
@@ -53,7 +53,7 @@ To run the web-based demos for the Loan EMI Simulator and String Matching:
 3.  **Access Demos:**
     Once the server is running, you can access the demos in your web browser:
     *   **Main Demo Page:** `http://127.0.0.1:5000/`
-    *   **Loan EMI Simulator:** `http://127.0.0.1:5000/loan_emi_calculator/`
+    *   **Loan EMI Simulator:** `http://127.0.0.1:5000/financial_algorithms/`
     *   **String Matching:** `http://127.0.0.1:5000/string_sequence_matching/`
 
     *(Note: The server runs in debug mode, so changes to the code will automatically restart the server.)*
@@ -195,7 +195,7 @@ A comprehensive home loan calculator that simulates loan repayments with support
 
 #### Basic Usage
 ```python
-from loan_emi_calculator import simulate_home_loan
+from financial_algorithms import simulate_home_loan
 
 # Example 1: Fixed EMI
 simulate_home_loan(
@@ -241,7 +241,7 @@ The calculator includes comprehensive test cases covering:
 
 Run tests using:
 ```bash
-python -m unittest test_loan_emi_calculator.py -v
+python -m unittest src/financial_algorithms/tests/test_loan_emi_calculator.py -v
 ```
 
 #### Dependencies
