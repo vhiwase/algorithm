@@ -8,7 +8,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir --user -r requirements.txt
 
 # Stage 2: Production Stage
-FROM gcr.io/distroless/python3
+FROM python:3.11-slim-bookworm
 
 WORKDIR /app
 

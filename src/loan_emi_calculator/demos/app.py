@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request, jsonify
 from loan_emi_calculator.core import simulate_home_loan
 import pandas as pd
-
 import os
+from utils.logger_config import logger
 
 loan_emi_calculator_bp = Blueprint('loan_emi_calculator', __name__,
                                 static_folder=os.path.join(os.path.dirname(__file__), 'static'),
@@ -10,6 +10,7 @@ loan_emi_calculator_bp = Blueprint('loan_emi_calculator', __name__,
 
 @loan_emi_calculator_bp.route('/')
 def index():
+    logger.info("Accessing loan_emi_calculator index page.")
     return render_template('loan_emi_calculator_index.html')
 
 @loan_emi_calculator_bp.route('/simulate', methods=['POST'])
@@ -18,6 +19,8 @@ def simulate():
     loan_amount = float(data['loan_amount'])
     annual_interest_rate = float(data['annual_interest_rate'])
     emi = float(data['emi'])
+    
+    logger.info(f"Simulating loan with amount: {loan_amount}, interest: {annual_interest_rate}, EMI: {emi}")
     
     try:
         schedule_df = simulate_home_loan(loan_amount, annual_interest_rate, emi)
@@ -45,7 +48,7 @@ def simulate():
                 'principal': row['Principal Paid'],
                 'closing_balance': row['Remaining Balance']
             })
-
+        logger.info("Loan simulation successful.")
         return jsonify({
             'total_interest_payable': total_interest_payable,
             'total_payment': total_payment,
@@ -54,4 +57,5 @@ def simulate():
             'schedule': schedule_data
         })
     except ValueError as e:
+        logger.error(f"Loan simulation failed: {e}")
         return jsonify({'error': str(e)}), 400

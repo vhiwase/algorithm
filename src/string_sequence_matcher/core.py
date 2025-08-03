@@ -1,5 +1,6 @@
 import difflib
 from typing import List, Tuple, Dict
+from utils.logger_config import logger, log_memory_usage_function
 
 __all__ = ['calculate_string_similarity', 'print_comparison_details']
 
@@ -24,7 +25,6 @@ def compare_strings(source_text: str, target_text: str) -> List[Tuple[str, str, 
         differences.append((operation, source_text[src_start:src_end], 
                           target_text[tgt_start:tgt_end], src_start, tgt_start))
     return differences
-
 
 def calculate_string_similarity(text: str, subtext: str) -> Dict:
     """
@@ -97,7 +97,8 @@ def calculate_string_similarity(text: str, subtext: str) -> Dict:
     subtext_length = len(subtext)
     unmatched_char_count = (subtext_length - matched_char_count)
     
-    dissimilarity_score = (unmatched_char_count + 
+    dissimilarity_score = (
+                          unmatched_char_count + 
                           inserted_char_count + 
                           replaced_char_count + 
                           gap_char_count)
@@ -119,53 +120,53 @@ def calculate_string_similarity(text: str, subtext: str) -> Dict:
 
 def print_comparison_details(text: str, subtext: str, results: Dict):
     """Helper function to print detailed comparison results."""
-    print("\nInput Strings:")
-    print(f"Text    : '{text}'")
-    print(f"Subtext : '{subtext}'")
+    logger.info("\nInput Strings:")
+    logger.info(f"Text    : '{text}'")
+    logger.info(f"Subtext : '{subtext}'")
     
-    print("\nMetrics:")
+    logger.info("\nMetrics:")
     for key, value in results.items():
-        print(f"{key:<20}: {value}")
+        logger.info(f"{key:<20}: {value}")
 
 
 def run_examples():
     """Run examples demonstrating string matching behavior with different scenarios."""
     
-    print("\n" + "=" * 80)
-    print("1. Basic Exact Match")
-    print("=" * 80)
+    logger.info("\n" + "=" * 80)
+    logger.info("1. Basic Exact Match")
+    logger.info("=" * 80)
     text = "Hello World! This is a test string."
     subtext = "This is"
     results = calculate_string_similarity(text, subtext)
     print_comparison_details(text, subtext, results)
 
-    print("\n" + "=" * 80)
-    print("2. Case Sensitivity Example")
-    print("=" * 80)
+    logger.info("\n" + "=" * 80)
+    logger.info("2. Case Sensitivity Example")
+    logger.info("=" * 80)
     text = "HELLO WORLD! This is a TEST string."
     subtext = "hello world"
     results = calculate_string_similarity(text, subtext)
     print_comparison_details(text, subtext, results)
 
-    print("\n" + "=" * 80)
-    print("3. Partial Match with Special Characters")
-    print("=" * 80)
+    logger.info("\n" + "=" * 80)
+    logger.info("3. Partial Match with Special Characters")
+    logger.info("=" * 80)
     text = "User ID: #12345 (active) - user@example.com"
     subtext = "#12345 - user@example"
     results = calculate_string_similarity(text, subtext)
     print_comparison_details(text, subtext, results)
 
-    print("\n" + "=" * 80)
-    print("4. Whitespace Handling")
-    print("=" * 80)
+    logger.info("\n" + "=" * 80)
+    logger.info("4. Whitespace Handling")
+    logger.info("=" * 80)
     text = "The    quick    brown    fox"
     subtext = "quick brown fox"
     results = calculate_string_similarity(text, subtext)
     print_comparison_details(text, subtext, results)
 
-    print("\n" + "=" * 80)
-    print("5. Multi-line Text")
-    print("=" * 80)
+    logger.info("\n" + "=" * 80)
+    logger.info("5. Multi-line Text")
+    logger.info("=" * 80)
     text = """First line of text
     Second line with important data
     Third line here"""
@@ -173,9 +174,9 @@ def run_examples():
     results = calculate_string_similarity(text, subtext)
     print_comparison_details(text, subtext, results)
 
-    print("\n" + "=" * 80)
-    print("6. Unicode and Emoji")
-    print("=" * 80)
+    logger.info("\n" + "=" * 80)
+    logger.info("6. Unicode and Emoji")
+    logger.info("=" * 80)
     text = "Hello 👋 World! 🌍 Have a Nice Day! ⭐"
     subtext = "World! 🌍"
     results = calculate_string_similarity(text, subtext)

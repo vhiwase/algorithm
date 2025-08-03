@@ -1,10 +1,10 @@
 __all__ = ['calculate_emi', 'simulate_home_loan', 'INR']
 
+from utils.logger_config import logger, log_memory_usage_function
 import pandas as pd
 
 # Utility to format currency
 INR = lambda x: f"₹{int(round(x)):,}"
-
 
 def calculate_emi(P, r, n):
     """
@@ -13,7 +13,6 @@ def calculate_emi(P, r, n):
     if r == 0:
         return P / n
     return P * r * (1 + r) ** n / ((1 + r) ** n - 1)
-
 
 def simulate_home_loan(
     loan_amount,
@@ -40,7 +39,7 @@ def simulate_home_loan(
     # Calculate EMI if target_months is given
     if emi is None and target_months is not None:
         emi = calculate_emi(balance, monthly_interest_rate, target_months)
-        print(f"To finish in {target_months} months, you need to pay EMI: {INR(emi)}")
+        logger.info(f"To finish in {target_months} months, you need to pay EMI: {INR(emi)}")
     elif emi is None:
         raise ValueError("You must specify either emi or target_months.")
 
@@ -76,20 +75,20 @@ def simulate_home_loan(
             break
 
     df = pd.DataFrame(schedule)
-    print("\nRepayment Schedule (first 24 months or full schedule if shorter):")
-    print(df.head(24).to_string(index=False))
+    logger.info("\nRepayment Schedule (first 24 months or full schedule if shorter):")
+    logger.info(df.head(24).to_string(index=False))
     if len(df) > 24:
-        print(f"... (showing first 24 of {len(df)} months)")
-    print(f"\nSUMMARY:")
-    print(f"  Total Months: {month}")
-    print(f"  Total Interest Paid: {INR(total_interest_paid)}")
-    print(f"  Total Paid: {INR(total_interest_paid + loan_amount)}")
+        logger.info(f"... (showing first 24 of {len(df)} months)")
+    logger.info(f"\nSUMMARY:")
+    logger.info(f"  Total Months: {month}")
+    logger.info(f"  Total Interest Paid: {INR(total_interest_paid)}")
+    logger.info(f"  Total Paid: {INR(total_interest_paid + loan_amount)}")
     if df.empty:
         raise ValueError("Loan amount must be greater than zero and result in a valid schedule.")
-    print(f"  Last EMI: {df.iloc[-1]['EMI']}")
+    logger.info(f"  Last EMI: {df.iloc[-1]['EMI']}")
     if any(df['Lump Sum']):
-        print(f"  Lump Sums Paid: {', '.join([f'M{m}: {l}' for m, l in zip(df['Month'], df['Lump Sum']) if l])}")
-    print()
+        logger.info(f"  Lump Sums Paid: {', '.join([f'M{m}: {l}' for m, l in zip(df['Month'], df['Lump Sum']) if l])}")
+    logger.info("\n")
     return df
 
 # --- EXAMPLES TO EXPERIMENT WITH ---
@@ -97,15 +96,15 @@ if __name__ == "__main__":
     loan_amount = 1712369
     annual_interest_rate = 9.2
 
-    print("\n--- Example 1: Fixed EMI ---")
+    logger.info("\n--- Example 1: Fixed EMI ---")
     simulate_home_loan(loan_amount, annual_interest_rate, emi=61200)
 
-    print("\n--- Example 2: Fixed EMI + Lump Sums in Month 6 and 12 ---")
+    logger.info("\n--- Example 2: Fixed EMI + Lump Sums in Month 6 and 12 ---")
     simulate_home_loan(
         loan_amount, annual_interest_rate, emi=61200, lump_sums={6: 100000, 12: 50000}
     )
 
-    print("\n--- Example 3: Pay off in months (calculate EMI) ---")
+    logger.info("\n--- Example 3: Pay off in months (calculate EMI) ---")
     simulate_home_loan(
         loan_amount, annual_interest_rate, target_months=24
     )
