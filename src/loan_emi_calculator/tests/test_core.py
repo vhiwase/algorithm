@@ -1,5 +1,16 @@
+# import sys
+# import pathlib
+
+# file_posixpath = pathlib.Path(__file__)
+# src_posixpath = file_posixpath.parent.parent.parent.absolute()
+# src_path = src_posixpath.as_posix()
+# if src_path not in sys.path:
+#     sys.path.append(src_path)
+
 import unittest
-from loan_emi_simulator import calculate_emi, simulate_home_loan, INR
+from loan_emi_calculator import calculate_emi, simulate_home_loan, INR
+
+__all__ = ['TestHomeLoan']
 
 class TestHomeLoan(unittest.TestCase):
     def test_calculate_emi(self):

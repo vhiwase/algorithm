@@ -1,7 +1,7 @@
 import difflib
 from typing import List, Tuple, Dict
 
-__all__ = ['calculate_string_similarity']
+__all__ = ['calculate_string_similarity', 'print_comparison_details']
 
 
 def compare_strings(source_text: str, target_text: str) -> List[Tuple[str, str, str, int, int]]:

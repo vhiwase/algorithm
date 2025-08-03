@@ -1,8 +1,9 @@
 import unittest
 from io import StringIO
 from contextlib import redirect_stdout
-from string_matching import calculate_string_similarity, print_comparison_details
+from string_sequence_matcher import calculate_string_similarity, print_comparison_details
 
+__all__ = ['TestStringSimilarity']
 
 class TestStringSimilarity(unittest.TestCase):
     """Test cases for string similarity metrics calculation."""

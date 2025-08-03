@@ -1,17 +1,18 @@
 from flask import Blueprint, render_template, request, jsonify
-from loan_emi_simulator import simulate_home_loan
+from loan_emi_calculator.core import simulate_home_loan
 import pandas as pd
 
 import os
 
-loan_emi_simulator_bp = Blueprint('loan_emi_simulator', __name__,
+loan_emi_calculator_bp = Blueprint('loan_emi_calculator', __name__,
+                                static_folder=os.path.join(os.path.dirname(__file__), 'static'),
                                 template_folder=os.path.join(os.path.dirname(__file__), 'templates'))
 
-@loan_emi_simulator_bp.route('/')
+@loan_emi_calculator_bp.route('/')
 def index():
-    return render_template('loan_emi_simulator_index.html')
+    return render_template('loan_emi_calculator_index.html')
 
-@loan_emi_simulator_bp.route('/simulate', methods=['POST'])
+@loan_emi_calculator_bp.route('/simulate', methods=['POST'])
 def simulate():
     data = request.get_json()
     loan_amount = float(data['loan_amount'])

@@ -1,3 +1,5 @@
+__all__ = ['calculate_emi', 'simulate_home_loan', 'INR']
+
 import pandas as pd
 
 # Utility to format currency

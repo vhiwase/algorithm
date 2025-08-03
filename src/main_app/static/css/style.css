@@ -1,0 +1,57 @@
+body {
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: #333;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.default-bg {
+    background-image: url('https://plus.unsplash.com/premium_photo-1661882403999-46081e67c401?q=80&w=2929&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); /* New default background image */
+}
+
+.container {
+    background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white background for content */
+    padding: 2rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease-in-out; /* Added transition */
+}
+
+.card {
+    background-color: rgba(255, 255, 255, 0.95);
+    border: none;
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease-in-out; /* Added transition */
+}
+
+.card:hover {
+    transform: translateY(-5px); /* Added hover effect */
+    box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.1);
+}
+
+.form-control {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-color: rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out; /* Added transition */
+}
+
+.form-control:focus {
+    background-color: #fff;
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    transition: all 0.3s ease-in-out; /* Added transition */
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+    transform: translateY(-2px); /* Added hover effect */
+}
