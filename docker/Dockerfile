@@ -20,4 +20,4 @@ COPY src/ /app/src
 
 EXPOSE 5000
 
-CMD ["python3", "src/main_app/app.py"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "src.main_app.app:app"]

@@ -16,3 +16,4 @@ tzdata==2025.2
 zipp==3.21.0
 flask
 psutil
+gunicorn
