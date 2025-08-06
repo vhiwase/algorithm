@@ -26,6 +26,18 @@
                     Please enter the subtext.
                 </div>
             </div>
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="case_sensitive" name="case_sensitive" checked>
+                <label class="form-check-label" for="case_sensitive">Case Sensitive</label>
+            </div>
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="ignore_whitespace" name="ignore_whitespace">
+                <label class="form-check-label" for="ignore_whitespace">Ignore Whitespace</label>
+            </div>
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="normalize" name="normalize">
+                <label class="form-check-label" for="normalize">Normalize Unicode</label>
+            </div>
             <div class="d-grid gap-2">
                 <button type="submit" class="btn btn-primary btn-lg">Compare Strings</button>
             </div>
@@ -65,6 +77,9 @@
             const formData = new FormData(form);
             const text = formData.get('text');
             const subtext = formData.get('subtext');
+            const case_sensitive = formData.get('case_sensitive') === 'on';
+            const ignore_whitespace = formData.get('ignore_whitespace') === 'on';
+            const normalize = formData.get('normalize') === 'on';
 
             try {
                 const response = await fetch('/string_sequence_matching/compare', {
@@ -74,7 +89,10 @@
                     },
                     body: JSON.stringify({
                         text: text,
-                        subtext: subtext
+                        subtext: subtext,
+                        case_sensitive: case_sensitive,
+                        ignore_whitespace: ignore_whitespace,
+                        normalize: normalize
                     })
                 });
 

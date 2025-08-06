@@ -1,5 +1,5 @@
 # Stage 1: Build Stage
-FROM python:3.11-slim-bookworm as builder
+FROM python:3.11-slim-bookworm AS builder
 
 WORKDIR /app
 
@@ -7,8 +7,18 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir --user -r requirements.txt
 
+# Copy application code
+COPY src/ /app/src
+
+# Run tests
+RUN python3 -m unittest discover -s src
+
 # Stage 2: Production Stage
 FROM python:3.11-slim-bookworm
+
+# Set the locale to C.UTF-8 to ensure full UTF-8 support.
+# This is a more modern and reliable approach than installing locales.
+ENV LANG C.UTF-8
 
 WORKDIR /app
 

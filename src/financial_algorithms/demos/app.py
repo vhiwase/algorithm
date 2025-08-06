@@ -2,7 +2,9 @@ from flask import Blueprint, render_template, request, jsonify
 from financial_algorithms import simulate_home_loan
 import pandas as pd
 import os
-from utils.logger_config import logger
+from utils.logger_config import configure_logger
+
+logger = configure_logger()
 
 financial_algorithms_bp = Blueprint('financial_algorithms', __name__,
                                 static_folder=os.path.join(os.path.dirname(__file__), 'static'),

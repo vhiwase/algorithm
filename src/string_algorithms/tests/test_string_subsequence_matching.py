@@ -1,6 +1,6 @@
 import unittest
 from io import StringIO
-from contextlib import redirect_stdout
+from contextlib import redirect_stdout, redirect_stderr
 from string_algorithms import calculate_substring_similarity, print_comparison_details
 
 __all__ = ['TestStringSimilarity']
@@ -249,7 +249,7 @@ class TestStringSimilarity(unittest.TestCase):
         
         # Capture the printed output
         output = StringIO()
-        with redirect_stdout(output):
+        with redirect_stderr(output):
             print_comparison_details(text, subtext, results)
         
         printed_output = output.getvalue()
@@ -263,6 +263,27 @@ class TestStringSimilarity(unittest.TestCase):
         # Verify all metrics are present in the output
         for key in results.keys():
             self.assertIn(key, printed_output)
+
+    def test_unicode_normalization(self):
+        """Test case for Unicode normalization."""
+        # 'é' as a single precomposed character
+        text = "Café"
+        # 'e' followed by a combining acute accent
+        subtext = "Cafe\u0301"
+        
+        # With normalization, they should be identical
+        results_normalized = calculate_substring_similarity(text, subtext, normalize=True)
+        self.assert_metrics_structure(results_normalized)
+        self.assertEqual(results_normalized['dissimilarity_score'], 0)
+        self.assertEqual(results_normalized['matched_char_count'], 4) # Normalized length
+        self.assertEqual(results_normalized['unmatched_char_count'], 0)
+        self.assertEqual(results_normalized['matches'][0], text)
+
+        # Without normalization, they should be different
+        results_not_normalized = calculate_substring_similarity(text, subtext, normalize=False)
+        self.assert_metrics_structure(results_not_normalized)
+        self.assertGreater(results_not_normalized['dissimilarity_score'], 0)
+        self.assertNotEqual(results_not_normalized['matched_char_count'], len(text))
 
 
 if __name__ == '__main__':

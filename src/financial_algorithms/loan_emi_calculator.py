@@ -1,7 +1,23 @@
 __all__ = ['calculate_emi', 'simulate_home_loan', 'INR']
 
-from utils.logger_config import logger, log_memory_usage_function
 import pandas as pd
+try:
+    # Project‑specific logger configuration; fallback to a simple console logger.
+    from utils.logger_config import configure_logger
+except ModuleNotFoundError:
+    # If the utils package cannot be found, add the project root to ``sys.path``.
+    import sys
+    from pathlib import Path
+
+    def _add_project_root_to_sys_path() -> None:
+        project_root = Path(__file__).resolve().parents[1]
+        if str(project_root) not in sys.path:
+            sys.path.append(str(project_root))
+
+    _add_project_root_to_sys_path()
+    from utils.logger_config import configure_logger
+
+logger = configure_logger()
 
 # Utility to format currency
 INR = lambda x: f"₹{int(round(x)):,}"

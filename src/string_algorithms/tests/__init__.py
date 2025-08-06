@@ -9,6 +9,6 @@ def add_project_root_to_sys_path():
 
 add_project_root_to_sys_path()
 
-from .test_string_sequence_matcher import *
+from .test_string_subsequence_matching import *
 
-__all__ = test_string_sequence_matcher.__all__
+__all__ = test_string_subsequence_matching.__all__

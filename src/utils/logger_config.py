@@ -14,7 +14,7 @@ except NameError:
     FILE = pathlib.Path("logger.py")
 BASE = FILE.parent
 
-__all__ = ['logger', 'log_memory_usage', 'log_memory_usage_function', 'configure_logger']
+__all__ = ['log_memory_usage_function', 'configure_logger']
 
 # Process for memory measurements
 _process = psutil.Process(os.getpid())
@@ -67,35 +67,6 @@ class MemoryUsageFilter(logging.Filter):
         return True
 
 # -----------------------------
-# Decorator for Before/After Memory Profiling
-# -----------------------------
-def log_memory_usage(func):
-    """
-    Decorator to log memory usage before and after the function execution.
-    """
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        try:
-            before = _process.memory_info()
-            rss_b = before.rss / (1024 ** 2)
-            vms_b = before.vms / (1024 ** 2)
-            logger.info(f"[Mem Before] {func.__name__} RSS={rss_b:.2f}MB VMS={vms_b:.2f}MB")
-
-            result = func(*args, **kwargs)
-
-            after = _process.memory_info()
-            rss_a = after.rss / (1024 ** 2)
-            vms_a = after.vms / (1024 ** 2)
-            logger.info(f"[Mem After]  {func.__name__} RSS={rss_a:.2f}MB VMS={vms_a:.2f}MB")
-            logger.info(f"[Mem Delta]  {func.__name__} RSS={rss_a - rss_b:+.2f}MB VMS={vms_a - vms_b:+.2f}MB")
-
-            return result
-        except Exception as e:
-            logger.exception(f"Memory logging failed for {func.__name__}: {e}")
-            raise
-    return wrapper
-
-# -----------------------------
 # Function for Memory Profiling
 # -----------------------------
 def log_memory_usage_function(tag: str):
@@ -139,6 +110,3 @@ def configure_logger():
     # Initialization log
     app_logger.info("✅ Logger initialized successfully with memory profiling")
     return app_logger
-
-# Globally accessible logger variable, but initialized by the application
-logger = logging.getLogger('app_logger') # Get a reference, but it won't be configured until configure_logger is called.
