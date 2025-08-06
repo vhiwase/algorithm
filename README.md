@@ -38,7 +38,7 @@ cd algorithm
 
 ## Running Demos
 
-To run the web-based demos for the Loan EMI Simulator and String Matching:
+To run the web-based demos for the Loan EMI Simulator and Sub Sequence String Matching:
 
 1.  **Install Dependencies:**
     ```bash
@@ -54,7 +54,7 @@ To run the web-based demos for the Loan EMI Simulator and String Matching:
     Once the server is running, you can access the demos in your web browser:
     *   **Main Demo Page:** `http://127.0.0.1:5000/`
     *   **Loan EMI Simulator:** `http://127.0.0.1:5000/financial_algorithms/`
-    *   **String Matching:** `http://127.0.0.1:5000/string_sequence_matching/`
+    *   **Sub Sequence String Matching:** `http://127.0.0.1:5000/string_sequence_matching/`
 
     *(Note: The server runs in debug mode, so changes to the code will automatically restart the server.)*
 
@@ -67,11 +67,11 @@ A robust string comparison algorithm that provides detailed similarity metrics b
 
 #### Basic Usage
 ```python
-from string_sequence_matching import calculate_string_similarity
+from string_sequence_matching import calculate_substring_similarity
 
 text = "Hello World! This is a test."
 subtext = "Hello world"
-results = calculate_string_similarity(text, subtext)
+results = calculate_substring_similarity(text, subtext)
 ```
 
 #### Features
@@ -87,7 +87,7 @@ results = calculate_string_similarity(text, subtext)
 # Case 1: Exact Match
 text = "Hello World!"
 subtext = "World"
-results = calculate_string_similarity(text, subtext)
+results = calculate_substring_similarity(text, subtext)
 print_comparison_details(text, subtext, results)
 
 Input Strings:
@@ -110,7 +110,7 @@ gaps               : []
 # Case 2: Case-Sensitive Mismatch
 text = "HELLO"
 subtext = "hello"
-results = calculate_string_similarity(text, subtext)
+results = calculate_substring_similarity(text, subtext)
 print_comparison_details(text, subtext, results)
 
 Input Strings:
@@ -133,7 +133,7 @@ gaps               : []
 # Case 3: Partial Match with Replacements and Gaps
 text = "The quick brown fox jumps over the lazy dog"
 subtext = "The Quick Brown fox jumped over the dog"
-results = calculate_string_similarity(text, subtext)
+results = calculate_substring_similarity(text, subtext)
 print_comparison_details(text, subtext, results)
 
 Input Strings:
@@ -156,7 +156,7 @@ gaps               : ['lazy ']
 
 ### Advanced Usage: SequenceMatcher Configuration
 
-The string matching algorithm uses Python's `difflib.SequenceMatcher` with careful configuration for precise matching:
+The Sub Sequence String Matching algorithm uses Python's `difflib.SequenceMatcher` with careful configuration for precise matching:
 
 ```python
 # Default behavior (may use heuristics)
@@ -177,7 +177,7 @@ The implementation uses `lambda x: False` as the junk parameter to ensure:
 
 ### Testing
 ```bash
-python -m unittest test_string_sequence_matching.py -v
+python -m unittest src/string_algorithms/string_subsequence_matching.py -v
 ```
 
 Test coverage includes:

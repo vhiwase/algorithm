@@ -1,7 +1,7 @@
 import unittest
 from io import StringIO
 from contextlib import redirect_stdout
-from string_algorithms import calculate_string_similarity, print_comparison_details
+from string_algorithms import calculate_substring_similarity, print_comparison_details
 
 __all__ = ['TestStringSimilarity']
 
@@ -42,7 +42,7 @@ class TestStringSimilarity(unittest.TestCase):
         """Test case for exact substring matching."""
         text = "Hello World! This is a test string."
         subtext = "This is"
-        results = calculate_string_similarity(text, subtext)
+        results = calculate_substring_similarity(text, subtext)
         
         self.assert_metrics_structure(results)
         self.assertEqual(results['matched_char_count'], len(subtext))
@@ -57,7 +57,7 @@ class TestStringSimilarity(unittest.TestCase):
         """Test case for case-sensitive matching."""
         text = "HELLO"
         subtext = "hello"
-        results = calculate_string_similarity(text, subtext)
+        results = calculate_substring_similarity(text, subtext)
         
         self.assert_metrics_structure(results)
         self.assertGreater(results['dissimilarity_score'], 0)
@@ -75,7 +75,7 @@ class TestStringSimilarity(unittest.TestCase):
         """Test case for partial matching with character replacements."""
         text = "The quick brown fox jumps over the lazy dog"
         subtext = "The Quick Brown fox jumped over the dog"
-        results = calculate_string_similarity(text, subtext)
+        results = calculate_substring_similarity(text, subtext)
         
         self.assert_metrics_structure(results)
         self.assertGreater(results['replaced_char_count'], 0)
@@ -95,7 +95,7 @@ class TestStringSimilarity(unittest.TestCase):
         """Test case for matching with special characters."""
         text = "Email: User@Example.com, Phone: (123) 456-7890"
         subtext = "User@Example.com"
-        results = calculate_string_similarity(text, subtext)
+        results = calculate_substring_similarity(text, subtext)
         
         self.assert_metrics_structure(results)
         self.assertEqual(results['matched_char_count'], len(subtext))
@@ -109,7 +109,7 @@ class TestStringSimilarity(unittest.TestCase):
         """Test case for matching with numbers and punctuation."""
         text = "Invoice #12345 - Total: $199.99 (Due: 2024-01-31)"
         subtext = "Invoice #12345"
-        results = calculate_string_similarity(text, subtext)
+        results = calculate_substring_similarity(text, subtext)
         
         self.assert_metrics_structure(results)
         self.assertEqual(results['matched_char_count'], len(subtext))
@@ -125,7 +125,7 @@ class TestStringSimilarity(unittest.TestCase):
         Second Line with different content
         Third Line here"""
         subtext = "Second Line with similar content"
-        results = calculate_string_similarity(text, subtext)
+        results = calculate_substring_similarity(text, subtext)
         
         self.assert_metrics_structure(results)
         self.assertGreater(results['matched_char_count'], 0)
@@ -140,7 +140,7 @@ class TestStringSimilarity(unittest.TestCase):
         """Test case for matching with Unicode characters."""
         text = "Hello 👋 World! 🌍 Have a Nice Day! ⭐"
         subtext = "World! 🌍"
-        results = calculate_string_similarity(text, subtext)
+        results = calculate_substring_similarity(text, subtext)
         
         self.assert_metrics_structure(results)
         self.assertEqual(results['matched_char_count'], len(subtext))
@@ -154,7 +154,7 @@ class TestStringSimilarity(unittest.TestCase):
         """Test case for handling whitespace."""
         text = "This    Has    Multiple    Spaces    Between    Words"
         subtext = "Has Multiple Spaces"
-        results = calculate_string_similarity(text, subtext)
+        results = calculate_substring_similarity(text, subtext)
         
         self.assert_metrics_structure(results)
         self.assertGreater(results['matched_char_count'], 0)
@@ -167,7 +167,7 @@ class TestStringSimilarity(unittest.TestCase):
         """Test case for completely different strings."""
         text = "ABCDEFGHIJKLMNOP"  # Using a string with no common substrings
         subtext = "123456789"      # Completely different characters
-        results = calculate_string_similarity(text, subtext)
+        results = calculate_substring_similarity(text, subtext)
         
         self.assert_metrics_structure(results)
         self.assertGreater(results['dissimilarity_score'], 0)
@@ -183,7 +183,7 @@ class TestStringSimilarity(unittest.TestCase):
         """Test case for address matching."""
         text = "OFFICE OF ACQUISITION MANAGEMENT (A/LM/AQM) PO BOX 9115 ROSSLYN STATION US DEPARTMENT OF STATE ARLINGTON, VA 22219"
         subtext = "A/LM/AQM) PO BOX 9115"
-        results = calculate_string_similarity(text, subtext)
+        results = calculate_substring_similarity(text, subtext)
         
         self.assert_metrics_structure(results)
         self.assertGreater(results['matched_char_count'], 0)
@@ -197,7 +197,7 @@ class TestStringSimilarity(unittest.TestCase):
         """Test case for empty strings."""
         text = ""
         subtext = ""
-        results = calculate_string_similarity(text, subtext)
+        results = calculate_substring_similarity(text, subtext)
         
         self.assert_metrics_structure(results)
         self.assertEqual(results['text_length'], 0)
@@ -211,7 +211,7 @@ class TestStringSimilarity(unittest.TestCase):
         """Test case for single character strings."""
         text = "A"
         subtext = "a"
-        results = calculate_string_similarity(text, subtext)
+        results = calculate_substring_similarity(text, subtext)
         
         self.assert_metrics_structure(results)
         self.assertEqual(results['text_length'], 1)
@@ -229,7 +229,7 @@ class TestStringSimilarity(unittest.TestCase):
         """Test case for long text strings."""
         text = "A" * 1000
         subtext = "A" * 100
-        results = calculate_string_similarity(text, subtext)
+        results = calculate_substring_similarity(text, subtext)
         
         self.assert_metrics_structure(results)
         self.assertEqual(results['text_length'], 1000)
@@ -245,7 +245,7 @@ class TestStringSimilarity(unittest.TestCase):
         """Test case for print_comparison_details output format."""
         text = "Hello World"
         subtext = "hello"
-        results = calculate_string_similarity(text, subtext)
+        results = calculate_substring_similarity(text, subtext)
         
         # Capture the printed output
         output = StringIO()

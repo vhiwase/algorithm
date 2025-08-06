@@ -2,7 +2,7 @@ import difflib
 from typing import List, Tuple, Dict
 from utils.logger_config import logger, log_memory_usage_function
 
-__all__ = ['calculate_string_similarity', 'print_comparison_details']
+__all__ = ['calculate_substring_similarity', 'print_comparison_details']
 
 
 def compare_strings(source_text: str, target_text: str) -> List[Tuple[str, str, str, int, int]]:
@@ -26,7 +26,7 @@ def compare_strings(source_text: str, target_text: str) -> List[Tuple[str, str, 
                           target_text[tgt_start:tgt_end], src_start, tgt_start))
     return differences
 
-def calculate_string_similarity(text: str, subtext: str) -> Dict:
+def calculate_substring_similarity(text: str, subtext: str) -> Dict:
     """
     Calculate similarity metrics between a text and a subtext.
     Case sensitive comparison.
@@ -130,14 +130,14 @@ def print_comparison_details(text: str, subtext: str, results: Dict):
 
 
 def run_examples():
-    """Run examples demonstrating string matching behavior with different scenarios."""
+    """Run examples demonstrating Sub Sequence String Matching behavior with different scenarios."""
     
     logger.info("\n" + "=" * 80)
     logger.info("1. Basic Exact Match")
     logger.info("=" * 80)
     text = "Hello World! This is a test string."
     subtext = "This is"
-    results = calculate_string_similarity(text, subtext)
+    results = calculate_substring_similarity(text, subtext)
     print_comparison_details(text, subtext, results)
 
     logger.info("\n" + "=" * 80)
@@ -145,7 +145,7 @@ def run_examples():
     logger.info("=" * 80)
     text = "HELLO WORLD! This is a TEST string."
     subtext = "hello world"
-    results = calculate_string_similarity(text, subtext)
+    results = calculate_substring_similarity(text, subtext)
     print_comparison_details(text, subtext, results)
 
     logger.info("\n" + "=" * 80)
@@ -153,7 +153,7 @@ def run_examples():
     logger.info("=" * 80)
     text = "User ID: #12345 (active) - user@example.com"
     subtext = "#12345 - user@example"
-    results = calculate_string_similarity(text, subtext)
+    results = calculate_substring_similarity(text, subtext)
     print_comparison_details(text, subtext, results)
 
     logger.info("\n" + "=" * 80)
@@ -161,7 +161,7 @@ def run_examples():
     logger.info("=" * 80)
     text = "The    quick    brown    fox"
     subtext = "quick brown fox"
-    results = calculate_string_similarity(text, subtext)
+    results = calculate_substring_similarity(text, subtext)
     print_comparison_details(text, subtext, results)
 
     logger.info("\n" + "=" * 80)
@@ -171,7 +171,7 @@ def run_examples():
     Second line with important data
     Third line here"""
     subtext = "Second line with data"
-    results = calculate_string_similarity(text, subtext)
+    results = calculate_substring_similarity(text, subtext)
     print_comparison_details(text, subtext, results)
 
     logger.info("\n" + "=" * 80)
@@ -179,7 +179,7 @@ def run_examples():
     logger.info("=" * 80)
     text = "Hello 👋 World! 🌍 Have a Nice Day! ⭐"
     subtext = "World! 🌍"
-    results = calculate_string_similarity(text, subtext)
+    results = calculate_substring_similarity(text, subtext)
     print_comparison_details(text, subtext, results)
 
 
