@@ -9,7 +9,7 @@ def add_project_root_to_sys_path():
 
 add_project_root_to_sys_path()
 
-from .string_subsequence_matching import *
+from .scripts import *
 from .tests import *
 
-__all__ = (string_subsequence_matching.__all__+ tests.__all__)
+__all__ = (scripts.__all__+ tests.__all__)

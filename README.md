@@ -25,11 +25,11 @@ A curated collection of Python algorithms focusing on efficiency and practical a
 ## Available Algorithms
 
 ### String Algorithms
-- [String Similarity Metrics](src/string_algorithms/string_subsequence_matching.py) - Calculate similarity metrics between strings using sequence matching
+- [String Similarity Metrics](src/string_algorithms/scripts/string_subsequence_matching.py) - Calculate similarity metrics between strings using sequence matching
 
 
 ### Financial Algorithms
-- [Home Loan EMI Calculator](src/financial_algorithms/loan_emi_calculator.py) - Calculate and simulate home loan repayments with flexible EMI, lump sum payments, and target month calculations
+- [Home Loan EMI Calculator](src/financial_algorithms/scripts/loan_emi_calculator.py) - Calculate and simulate home loan repayments with flexible EMI, lump sum payments, and target month calculations
 
 ## Quick Start
 
@@ -179,7 +179,7 @@ The implementation uses `lambda x: False` as the junk parameter to ensure:
 
 ### Testing
 ```bash
-python -m unittest src/string_algorithms/tests/test_string_algorithms.py -v
+python -m unittest src/string_algorithms/tests/test_string_subsequence_matching.py -v
 ```
 
 Test coverage includes:
