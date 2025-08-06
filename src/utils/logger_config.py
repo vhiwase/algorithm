@@ -1,11 +1,7 @@
 import os
 import pathlib
-import inspect
 import logging
 import psutil
-import threading
-from functools import wraps
-from flask import g, has_request_context
 
 # Reference to current file
 try:
@@ -14,7 +10,10 @@ except NameError:
     FILE = pathlib.Path("logger.py")
 BASE = FILE.parent
 
-__all__ = ['log_memory_usage_function', 'configure_logger']
+# Global logger instance
+logger = logging.getLogger('app_logger')
+
+__all__ = ['log_memory_usage_function', 'configure_logger', 'logger']
 
 # Process for memory measurements
 _process = psutil.Process(os.getpid())
@@ -30,41 +29,7 @@ def record_factory(*args, **kwargs):
 
     # Docker container ID
     record.container_id = os.getenv('HOSTNAME', 'unknown')
-
-    # Caller info: filename, function name, line number
-    try:
-        frame = inspect.currentframe()
-        while frame:
-            frame = frame.f_back
-            if not frame:
-                break
-            fname = frame.f_code.co_filename
-            if fname != __file__ and 'logging' not in fname:
-                func = frame.f_code.co_name
-                lineno = frame.f_lineno
-                display = fname.replace('/usr/src/app/', '') if fname.startswith('/usr/src/app/') else fname
-                record.func_info = f"{display}:{func}:{lineno}"
-                break
-        else:
-            record.func_info = "unknown:unknown:0"
-    except Exception:
-        record.func_info = "unknown:unknown:0"
-
-    record.filename = os.path.basename(record.pathname)
     return record
-
-# -----------------------------
-# Memory Usage Filter
-# -----------------------------
-class MemoryUsageFilter(logging.Filter):
-    """
-    Logging filter to inject current RSS and VMS (in MB) into each LogRecord.
-    """
-    def filter(self, record):
-        mem = _process.memory_info()
-        record.mem_rss = mem.rss / (1024 ** 2)
-        record.mem_vms = mem.vms / (1024 ** 2)
-        return True
 
 # -----------------------------
 # Function for Memory Profiling
@@ -86,27 +51,24 @@ def configure_logger():
     for h in root_logger.handlers[:]:
         root_logger.removeHandler(h)
 
-    # Create application logger
-    app_logger = logging.getLogger('app_logger')
-    app_logger.setLevel(logging.INFO)
-    app_logger.propagate = False
+    # Configure the global application logger
+    logger.setLevel(logging.INFO)
+    logger.propagate = False
 
     # Remove existing handlers from 'app_logger' to prevent duplicate logs
-    for h in app_logger.handlers[:]:
-        app_logger.removeHandler(h)
+    for h in logger.handlers[:]:
+        logger.removeHandler(h)
 
-    # Console handler with memory filter
+    # Console handler
     console_handler = logging.StreamHandler()
     console_handler.setLevel(logging.INFO)
     formatter = logging.Formatter(
-        '%(asctime)s+00:00 | [%(container_id)s] | %(levelname)s | %(func_info)s | '
-        'RSS=%(mem_rss).2fMB VMS=%(mem_vms).2fMB | %(message)s',
+        '%(asctime)s+00:00 | [%(container_id)s] | %(levelname)s | %(pathname)s:%(funcName)s:%(lineno)d | %(message)s',
         datefmt='%Y-%m-%dT%H:%M:%S'
     )
     console_handler.setFormatter(formatter)
-    console_handler.addFilter(MemoryUsageFilter())
-    app_logger.addHandler(console_handler)
+    logger.addHandler(console_handler)
 
     # Initialization log
-    app_logger.info("✅ Logger initialized successfully with memory profiling")
-    return app_logger
+    logger.info("✅ Logger initialized successfully")
+    return logger
