@@ -14,16 +14,16 @@ add_project_root_to_sys_path()
 
 from flask import Flask, render_template
 
-from financial_algorithms.demos.app import financial_algorithms_bp
-from string_algorithms.demos.app import string_sequence_matching_bp
+from financial_algorithms.demos.app import loan_emi_calculator_bp
+from string_algorithms.demos.app import string_subsequence_matching_bp
 from utils.logger_config import configure_logger
 
 logger = configure_logger()
 
 app = Flask(__name__, static_folder='static')
 
-app.register_blueprint(financial_algorithms_bp, url_prefix='/financial_algorithms')
-app.register_blueprint(string_sequence_matching_bp, url_prefix='/string_sequence_matching')
+app.register_blueprint(loan_emi_calculator_bp, url_prefix='/financial_algorithms/loan_emi_calculator')
+app.register_blueprint(string_subsequence_matching_bp, url_prefix='/string_algorithms/string_subsequence_matching')
 
 @app.route('/')
 def index():

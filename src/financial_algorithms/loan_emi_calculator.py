@@ -1,4 +1,4 @@
-__all__ = ['calculate_emi', 'simulate_home_loan', 'INR']
+__all__ = ['calculate_emi', 'simulate_loan', 'INR']
 
 import pandas as pd
 try:
@@ -30,7 +30,7 @@ def calculate_emi(P, r, n):
         return P / n
     return P * r * (1 + r) ** n / ((1 + r) ** n - 1)
 
-def simulate_home_loan(
+def simulate_loan(
     loan_amount,
     annual_interest_rate,
     emi=None,
@@ -113,14 +113,14 @@ if __name__ == "__main__":
     annual_interest_rate = 9.2
 
     logger.info("\n--- Example 1: Fixed EMI ---")
-    simulate_home_loan(loan_amount, annual_interest_rate, emi=61200)
+    simulate_loan(loan_amount, annual_interest_rate, emi=61200)
 
     logger.info("\n--- Example 2: Fixed EMI + Lump Sums in Month 6 and 12 ---")
-    simulate_home_loan(
+    simulate_loan(
         loan_amount, annual_interest_rate, emi=61200, lump_sums={6: 100000, 12: 50000}
     )
 
     logger.info("\n--- Example 3: Pay off in months (calculate EMI) ---")
-    simulate_home_loan(
+    simulate_loan(
         loan_amount, annual_interest_rate, target_months=24
     )

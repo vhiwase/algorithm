@@ -8,7 +8,7 @@
 #     sys.path.append(src_path)
 
 import unittest
-from financial_algorithms import calculate_emi, simulate_home_loan, INR
+from financial_algorithms import calculate_emi, simulate_loan, INR
 
 __all__ = ['TestHomeLoan']
 
@@ -30,12 +30,12 @@ class TestHomeLoan(unittest.TestCase):
         emi_large = calculate_emi(large_principal, monthly_rate, months)
         self.assertAlmostEqual(emi_large, 444243.94, places=2)
 
-    def test_simulate_home_loan_fixed_emi(self):
+    def test_simulate_loan_fixed_emi(self):
         # Test case 1: Fixed EMI without lump sum
         loan_amount = 1000000
         annual_rate = 12  # 12% annual
         emi = 100000
-        df = simulate_home_loan(loan_amount, annual_rate, emi=emi)
+        df = simulate_loan(loan_amount, annual_rate, emi=emi)
         
         # Check if DataFrame is returned
         self.assertIsNotNone(df)
@@ -44,25 +44,25 @@ class TestHomeLoan(unittest.TestCase):
         # Check if last balance is zero or negative
         self.assertLessEqual(float(df.iloc[-1]['Remaining Balance'].replace('₹', '').replace(',', '')), 0)
 
-    def test_simulate_home_loan_with_lump_sum(self):
+    def test_simulate_loan_with_lump_sum(self):
         # Test case: Fixed EMI with lump sum payments
         loan_amount = 1000000
         annual_rate = 12
         emi = 100000
         lump_sums = {6: 200000}
-        df = simulate_home_loan(loan_amount, annual_rate, emi=emi, lump_sums=lump_sums)
+        df = simulate_loan(loan_amount, annual_rate, emi=emi, lump_sums=lump_sums)
         
         # Check if lump sum is applied correctly
         self.assertEqual(df.iloc[5]['Lump Sum'], INR(200000))  # Month 6
         # Verify loan is paid off
         self.assertLessEqual(float(df.iloc[-1]['Remaining Balance'].replace('₹', '').replace(',', '')), 0)
 
-    def test_simulate_home_loan_target_months(self):
+    def test_simulate_loan_target_months(self):
         # Test case: Calculate EMI for target months
         loan_amount = 1000000
         annual_rate = 12
         target_months = 12
-        df = simulate_home_loan(loan_amount, annual_rate, target_months=target_months)
+        df = simulate_loan(loan_amount, annual_rate, target_months=target_months)
         
         # Check if loan is paid off
         self.assertLessEqual(float(df.iloc[-1]['Remaining Balance'].replace('₹', '').replace(',', '')), 0)
@@ -78,16 +78,16 @@ class TestHomeLoan(unittest.TestCase):
 
     def test_edge_cases(self):
         # Test case: Very small loan amount
-        df_small = simulate_home_loan(1000, 12, emi=100)
+        df_small = simulate_loan(1000, 12, emi=100)
         self.assertLessEqual(len(df_small), 12)
 
         # Test case: Very high interest rate
-        df_high_rate = simulate_home_loan(1000000, 24, emi=100000)
+        df_high_rate = simulate_loan(1000000, 24, emi=100000)
         self.assertIsNotNone(df_high_rate)
 
         # Test case: Zero loan amount
         with self.assertRaises(ValueError):
-            simulate_home_loan(0, 12, emi=1000)
+            simulate_loan(0, 12, emi=1000)
 
 if __name__ == '__main__':
     unittest.main() 

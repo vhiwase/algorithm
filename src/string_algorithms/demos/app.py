@@ -7,16 +7,16 @@ from utils.logger_config import configure_logger
 
 logger = configure_logger()
 
-string_sequence_matching_bp = Blueprint('string_sequence_matching', __name__,
+string_subsequence_matching_bp = Blueprint('string_subsequence_matching', __name__,
                              static_folder=os.path.join(os.path.dirname(__file__), 'static'),
                              template_folder=os.path.join(os.path.dirname(__file__), 'templates'))
 
-@string_sequence_matching_bp.route('/')
+@string_subsequence_matching_bp.route('/')
 def index():
-    logger.info("Accessing string_sequence_matching index page.")
+    logger.info("Accessing string_subsequence_matching index page.")
     return render_template('string_subsequence_matching_index.html')
 
-@string_sequence_matching_bp.route('/compare', methods=['POST'])
+@string_subsequence_matching_bp.route('/compare', methods=['POST'])
 def compare():
     data = request.get_json()
     text = data['text']
@@ -42,7 +42,7 @@ def compare():
     logger.info(f"String comparison successful.")
     return jsonify({'matches': results})
 
-@string_sequence_matching_bp.route('/debug_unicode')
+@string_subsequence_matching_bp.route('/debug_unicode')
 def debug_unicode():
     composed = "Café"            # Uses U+00E9
     decomposed = "Cafe\u0301"    # Uses 'e' + U+0301 (combining acute)

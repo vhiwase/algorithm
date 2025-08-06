@@ -55,8 +55,8 @@ To run the web-based demos for the Loan EMI Simulator and Sub Sequence String Ma
 3.  **Access Demos:**
     Once the server is running, you can access the demos in your web browser:
     *   **Main Demo Page:** `http://127.0.0.1:5000/`
-    *   **Loan EMI Simulator:** `http://127.0.0.1:5000/financial_algorithms/`
-    *   **Sub Sequence String Matching:** `http://127.0.0.1:5000/string_sequence_matching/`
+    *   **Loan EMI Simulator:** `http://127.0.0.1:5000/financial_algorithms/loan_emi_calculator`
+    *   **Sub Sequence String Matching:** `http://127.0.0.1:5000/string_algorithms/string_subsequence_matching`
 
     *(Note: The server runs in debug mode, so changes to the code will automatically restart the server.)*
 
@@ -69,7 +69,7 @@ A robust string comparison algorithm that provides detailed similarity metrics b
 
 #### Basic Usage
 ```python
-from string_sequence_matching import calculate_substring_similarity
+from string_algorithms import calculate_substring_similarity
 
 text = "Hello World! This is a test."
 subtext = "Hello world"
@@ -179,7 +179,7 @@ The implementation uses `lambda x: False` as the junk parameter to ensure:
 
 ### Testing
 ```bash
-python -m unittest src/string_algorithms/tests/test_string_subsequence_matching.py -v
+python -m unittest src/string_algorithms/tests/test_string_algorithms.py -v
 ```
 
 Test coverage includes:

@@ -1,21 +1,21 @@
 from flask import Blueprint, render_template, request, jsonify
-from financial_algorithms import simulate_home_loan
+from financial_algorithms import simulate_loan
 import pandas as pd
 import os
 from utils.logger_config import configure_logger
 
 logger = configure_logger()
 
-financial_algorithms_bp = Blueprint('financial_algorithms', __name__,
+loan_emi_calculator_bp = Blueprint('loan_emi_calculator', __name__,
                                 static_folder=os.path.join(os.path.dirname(__file__), 'static'),
                                 template_folder=os.path.join(os.path.dirname(__file__), 'templates'))
 
-@financial_algorithms_bp.route('/')
+@loan_emi_calculator_bp.route('/')
 def index():
     logger.info("Accessing loan_emi_calculator index page.")
     return render_template('loan_emi_calculator_index.html')
 
-@financial_algorithms_bp.route('/simulate', methods=['POST'])
+@loan_emi_calculator_bp.route('/simulate', methods=['POST'])
 def simulate():
     data = request.get_json()
     loan_amount = float(data['loan_amount'])
@@ -25,7 +25,7 @@ def simulate():
     logger.info(f"Simulating loan with amount: {loan_amount}, interest: {annual_interest_rate}, EMI: {emi}")
     
     try:
-        schedule_df = simulate_home_loan(loan_amount, annual_interest_rate, emi)
+        schedule_df = simulate_loan(loan_amount, annual_interest_rate, emi)
 
         # Convert relevant columns to numeric, removing '₹' and ','
         numeric_cols = ['EMI', 'Interest Paid', 'Principal Paid', 'Remaining Balance']
