@@ -18,6 +18,15 @@ __all__ = ['log_memory_usage_function', 'configure_logger', 'logger']
 # Process for memory measurements
 _process = psutil.Process(os.getpid())
 
+# Define emojis for log levels
+LOG_EMOJIS = {
+    'DEBUG': '🐛',
+    'INFO': 'ℹ️',
+    'WARNING': '⚠️',
+    'ERROR': '❌',
+    'CRITICAL': '🚨',
+}
+
 # -----------------------------
 # Custom LogRecord Factory
 # -----------------------------
@@ -29,6 +38,15 @@ def record_factory(*args, **kwargs):
 
     # Docker container ID
     record.container_id = os.getenv('HOSTNAME', 'unknown')
+
+    # Memory info
+    mem = _process.memory_info()
+    record.mem_rss = mem.rss / (1024 ** 2)
+    record.mem_vms = mem.vms / (1024 ** 2)
+
+    # Add emoji based on log level
+    record.emoji = LOG_EMOJIS.get(record.levelname, '❓')
+
     return record
 
 # -----------------------------
@@ -63,7 +81,8 @@ def configure_logger():
     console_handler = logging.StreamHandler()
     console_handler.setLevel(logging.INFO)
     formatter = logging.Formatter(
-        '%(asctime)s+00:00 | [%(container_id)s] | %(levelname)s | %(pathname)s:%(funcName)s:%(lineno)d | %(message)s',
+        '%(asctime)s+00:00 | [%(container_id)s] | %(emoji)s %(levelname)s | %(pathname)s:%(funcName)s:%(lineno)d | ' 
+        'RSS=%(mem_rss).2fMB VMS=%(mem_vms).2fMB | %(message)s',
         datefmt='%Y-%m-%dT%H:%M:%S'
     )
     console_handler.setFormatter(formatter)
