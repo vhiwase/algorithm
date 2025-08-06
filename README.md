@@ -15,7 +15,7 @@ A curated collection of Python algorithms focusing on efficiency and practical a
 - [Quick Start](#quick-start)
 - [Algorithm Details](#algorithm-details)
   - [String Similarity Metrics](#string-similarity-metrics)
-  - [String Matching](#string-matching)
+  
   - [Home Loan EMI Calculator](#home-loan-emi-calculator)
 - [Contributing](#contributing)
 - [Dependencies](#dependencies)
@@ -26,7 +26,7 @@ A curated collection of Python algorithms focusing on efficiency and practical a
 
 ### String Algorithms
 - [String Similarity Metrics](src/string_algorithms/string_subsequence_matching.py) - Calculate similarity metrics between strings using sequence matching
-- [String Matching](src/string_algorithms/string_matching.py) - A robust string comparison algorithm that provides detailed similarity metrics.
+
 
 ### Financial Algorithms
 - [Home Loan EMI Calculator](src/financial_algorithms/loan_emi_calculator.py) - Calculate and simulate home loan repayments with flexible EMI, lump sum payments, and target month calculations
@@ -57,7 +57,6 @@ To run the web-based demos for the Loan EMI Simulator and Sub Sequence String Ma
     *   **Main Demo Page:** `http://127.0.0.1:5000/`
     *   **Loan EMI Simulator:** `http://127.0.0.1:5000/financial_algorithms/`
     *   **Sub Sequence String Matching:** `http://127.0.0.1:5000/string_sequence_matching/`
-    *   **String Matching:** `http://127.0.0.1:5000/string_matching/`
 
     *(Note: The server runs in debug mode, so changes to the code will automatically restart the server.)*
 
@@ -191,30 +190,7 @@ Test coverage includes:
 - Comprehensive index tracking
 - Junk parameter behavior
 
-### String Matching
 
-#### Overview
-A robust string comparison algorithm that provides detailed similarity metrics between two strings. It supports optional case-insensitivity, whitespace collapsing, and Unicode normalisation.
-
-#### Basic Usage
-```python
-from string_matching import calculate_string_similarity
-
-result = calculate_string_similarity(
-    "Hello   World!", "world", case_sensitive=False, ignore_whitespace=True
-)
-```
-
-#### Features
-- Optional case-insensitive comparison
-- Optional whitespace collapsing
-- Optional Unicode normalisation (NFKC)
-- Detailed similarity metrics (matched, inserted, deleted, replaced characters)
-
-### Testing
-```bash
-python -m unittest src/string_algorithms/tests/test_string_matching.py -v
-```
 
 ### Home Loan EMI Calculator
 
