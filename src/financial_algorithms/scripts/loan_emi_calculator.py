@@ -59,6 +59,13 @@ def simulate_loan(
     elif emi is None:
         raise ValueError("You must specify either emi or target_months.")
 
+    # Calculate EMI if target_months is given
+    if emi is None and target_months is not None:
+        emi = calculate_emi(balance, monthly_interest_rate, target_months)
+        logger.info(f"To finish in {target_months} months, you need to pay EMI: {INR(emi)}")
+    elif emi is None:
+        raise ValueError("You must specify either emi or target_months.")
+
     MAX_MONTHS = 1200  # Safeguard to prevent infinite loops (100 years)
 
     while balance > 0 and month < MAX_MONTHS:

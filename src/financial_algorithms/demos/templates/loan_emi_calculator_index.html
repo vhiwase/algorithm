@@ -27,11 +27,37 @@
                 </div>
             </div>
             <div class="mb-3">
+                <label for="calculation_method" class="form-label">Calculation Method:</label>
+                <select class="form-select" id="calculation_method" name="calculation_method">
+                    <option value="emi" selected>Fixed EMI</option>
+                    <option value="target_months">Target Months</option>
+                </select>
+            </div>
+            <div class="mb-3" id="emi_input_group">
                 <label for="emi" class="form-label">EMI (₹):</label>
                 <input type="number" class="form-control" id="emi" name="emi" value="61200" required min="100">
                 <div class="invalid-feedback">
                     Please enter a valid EMI amount.
                 </div>
+            </div>
+            <div class="mb-3 d-none" id="target_months_input_group">
+                <label for="target_months" class="form-label">Target Months:</label>
+                <input type="number" class="form-control" id="target_months" name="target_months" value="24" min="1">
+                <div class="invalid-feedback">
+                    Please enter a valid number of months.
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Lump Sum Payments (optional)</label>
+                <div id="lump_sum_list">
+                    <!-- Dynamic lump sum rows will be added here -->
+                </div>
+                <button type="button" class="btn btn-outline-primary mt-2" id="add_lump_sum">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                    </svg> Add Lump Sum
+                </button>
             </div>
             <div class="d-grid gap-2">
                 <button type="submit" class="btn btn-primary btn-lg">Simulate Loan</button>
@@ -59,6 +85,53 @@
                 })
         })()
 
+        document.getElementById('calculation_method').addEventListener('change', function() {
+            const emiGroup = document.getElementById('emi_input_group');
+            const targetMonthsGroup = document.getElementById('target_months_input_group');
+            const emiInput = document.getElementById('emi');
+            const targetMonthsInput = document.getElementById('target_months');
+
+            if (this.value === 'target_months') {
+                emiGroup.classList.add('d-none');
+                targetMonthsGroup.classList.remove('d-none');
+                emiInput.required = false;
+                targetMonthsInput.required = true;
+            } else {
+                emiGroup.classList.remove('d-none');
+                targetMonthsGroup.classList.add('d-none');
+                emiInput.required = true;
+                targetMonthsInput.required = false;
+            }
+        });
+
+        document.getElementById('add_lump_sum').addEventListener('click', function() {
+            const list = document.getElementById('lump_sum_list');
+            const index = list.children.length;
+            const newItem = document.createElement('div');
+            newItem.classList.add('lump-sum-row', 'd-flex', 'align-items-center', 'mb-2');
+            newItem.innerHTML = `
+                <div class="input-group me-2">
+                    <span class="input-group-text">Month</span>
+                    <input type="number" class="form-control" placeholder="e.g., 6" name="lump_sum_month_${index}" min="1">
+                    <span class="input-group-text">Amount</span>
+                    <input type="number" class="form-control" placeholder="e.g., 100000" name="lump_sum_amount_${index}" min="1">
+                </div>
+                <button type="button" class="btn btn-danger btn-sm remove-lump-sum">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                    </svg>
+                </button>
+            `;
+            list.appendChild(newItem);
+        });
+
+        document.getElementById('lump_sum_list').addEventListener('click', function(e) {
+            if (e.target.closest('.remove-lump-sum')) {
+                e.target.closest('.lump-sum-row').remove();
+            }
+        });
+
         document.getElementById('emiForm').addEventListener('submit', async function(event) {
             event.preventDefault(); // Prevent default form submission
 
@@ -72,19 +145,39 @@
             const formData = new FormData(form);
             const loanAmount = formData.get('loan_amount');
             const annualInterestRate = formData.get('annual_interest_rate');
+            const calculationMethod = formData.get('calculation_method');
             const emi = formData.get('emi');
+            const targetMonths = formData.get('target_months');
+
+            let lump_sums = {};
+            const lumpSumRows = document.querySelectorAll('.lump-sum-row');
+            lumpSumRows.forEach((row, index) => {
+                const month = formData.get(`lump_sum_month_${index}`);
+                const amount = formData.get(`lump_sum_amount_${index}`);
+                if (month && amount) {
+                    lump_sums[parseInt(month)] = parseFloat(amount);
+                }
+            });
+
+            const payload = {
+                loan_amount: parseFloat(loanAmount),
+                annual_interest_rate: parseFloat(annualInterestRate),
+                lump_sums: lump_sums
+            };
+
+            if (calculationMethod === 'target_months') {
+                payload.target_months = parseInt(targetMonths);
+            } else {
+                payload.emi = parseFloat(emi);
+            }
 
             try {
-                                const response = await fetch('/financial_algorithms/loan_emi_calculator/simulate', {
+                const response = await fetch('/financial_algorithms/loan_emi_calculator/simulate', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        loan_amount: parseFloat(loanAmount),
-                        annual_interest_rate: parseFloat(annualInterestRate),
-                        emi: parseFloat(emi)
-                    })
+                    body: JSON.stringify(payload)
                 });
 
                 if (!response.ok) {

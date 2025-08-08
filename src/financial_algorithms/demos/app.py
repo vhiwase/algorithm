@@ -20,12 +20,19 @@ def simulate():
     data = request.get_json()
     loan_amount = float(data['loan_amount'])
     annual_interest_rate = float(data['annual_interest_rate'])
-    emi = float(data['emi'])
-    
-    logger.info(f"Simulating loan with amount: {loan_amount}, interest: {annual_interest_rate}, EMI: {emi}")
-    
+    emi = data.get('emi')
+    target_months = data.get('target_months')
+    lump_sums = data.get('lump_sums', {})
+
+    if emi is not None:
+        emi = float(emi)
+    if target_months is not None:
+        target_months = int(target_months)
+
+    logger.info(f"Simulating loan with amount: {loan_amount}, interest: {annual_interest_rate}, EMI: {emi}, Target Months: {target_months}, Lump Sums: {lump_sums}")
+
     try:
-        schedule_df = simulate_loan(loan_amount, annual_interest_rate, emi)
+        schedule_df = simulate_loan(loan_amount, annual_interest_rate, emi=emi, target_months=target_months, lump_sums=lump_sums)
 
         # Convert relevant columns to numeric, removing '₹' and ','
         numeric_cols = ['EMI', 'Interest Paid', 'Principal Paid', 'Remaining Balance']
