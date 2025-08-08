@@ -56,7 +56,7 @@ def log_memory_usage_function(tag: str):
     proc = psutil.Process(os.getpid())
     rss = proc.memory_info().rss  / (1024 * 1024)
     vms = proc.memory_info().vms  / (1024 * 1024)
-    logger.info(f"{tag} | RSS={rss:.2f}MB VMS={vms:.2f}MB")
+    logger.info(f"{tag} | 🧠 RSS={rss:.2f}MB 💾 VMS={vms:.2f}MB")
     return rss, vms
 
 
@@ -82,7 +82,7 @@ def configure_logger():
     console_handler.setLevel(logging.INFO)
     formatter = logging.Formatter(
         '%(asctime)s+00:00 | [%(container_id)s] | %(emoji)s %(levelname)s | %(pathname)s:%(funcName)s:%(lineno)d | ' 
-        'RSS=%(mem_rss).2fMB VMS=%(mem_vms).2fMB | %(message)s',
+        '🧠 RSS=%(mem_rss).2fMB 💾 VMS=%(mem_vms).2fMB | %(message)s',
         datefmt='%Y-%m-%dT%H:%M:%S'
     )
     console_handler.setFormatter(formatter)

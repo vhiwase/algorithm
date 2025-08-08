@@ -17,7 +17,6 @@ RUN python3 -m unittest discover -s src
 FROM python:3.11-slim-bookworm
 
 # Set the locale to C.UTF-8 to ensure full UTF-8 support.
-# This is a more modern and reliable approach than installing locales.
 ENV LANG C.UTF-8
 
 WORKDIR /app
@@ -28,6 +27,9 @@ COPY --from=builder /root/.local /usr/local
 # Copy application code
 COPY src/ /app/src
 
+# Set environment for production
+ENV FLASK_CONFIG production
+
 EXPOSE 5000
 
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "src.main_app.app:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "src.main_app.app:create_app('production')"]
